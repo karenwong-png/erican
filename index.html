@@ -1,0 +1,3603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Exclusive Co-Living for MIA Students</title>
+<meta name="description" content="Modern fully furnished rooms for Malaysian Institute of Art students in Taman Melawati — designed for comfort, convenience and community living, powered by BeLive" />
+<link rel="icon" type="image/png" href="favicon.png" />
+<link rel="shortcut icon" type="image/png" href="favicon.png" />
+<link rel="apple-touch-icon" href="favicon.png" />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
+
+<style>
+:root {
+  --orange: #FF6B1A;
+  --orange-deep: #E5530A;
+  --orange-soft: #FFF1E6;
+  --teal: #00BFA6;
+  --ink: #0E0E10;
+  --ink-soft: #2A2A2E;
+  --paper: #FAF7F2;
+  --paper-warm: #F2EDE3;
+  --line: rgba(14,14,16,0.12);
+  --shadow-lg: 0 30px 60px -20px rgba(14,14,16,0.25);
+  --shadow-md: 0 12px 30px -10px rgba(14,14,16,0.18);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Poppins', system-ui, sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.display { font-family: 'Poppins', sans-serif; font-weight: 600; letter-spacing: -0.02em; line-height: 1; font-variation-settings: "opsz" 144, "SOFT" 50; }
+.script { font-family: 'Poppins', sans-serif; font-weight: 700; }
+
+/* ---------- NAV ---------- */
+nav.top {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 18px 40px;
+  background: rgba(250, 247, 242, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--line);
+}
+.brand {
+  display: flex; flex-direction: column; align-items: flex-start; gap: 4px;
+  font-family: 'Poppins', sans-serif; font-weight: 700; font-size: 22px;
+  letter-spacing: -0.02em;
+}
+.brand-logos { display: flex; align-items: center; gap: 14px; }
+.brand-tagline {
+  font-family: 'Poppins', sans-serif; font-weight: 600;
+  font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--orange-deep);
+}
+.brand img.logo-belive { height: 36px; width: auto; display: block; }
+.brand img.logo-vitrox { height: 42px; width: auto; display: block; }
+.brand .x { color: var(--ink); opacity: 0.3; font-size: 18px; font-style: italic; }
+/* The dark footer reuses .brand, where an ink-coloured separator is invisible. */
+footer .brand .x { color: var(--paper); }
+
+/* Campus lock-up. mia-logo.png is the supplied MIA mark, trimmed to the artwork
+   and kept transparent so it sits on the paper nav and the partnership card;
+   mia-logo-w.png is the reversed cut for the dark footer, where the black
+   geometry and wordmark are paper and the red accents stay red. Same two-file
+   pattern the beLive mark already uses. Both are height-locked by the
+   .logo-vitrox / .logo-campus rules above. */
+
+nav ul { list-style: none; display: flex; gap: 36px; }
+nav ul a {
+  color: var(--ink); text-decoration: none; font-size: 14px;
+  font-weight: 500; position: relative; transition: color 0.2s;
+}
+nav ul a:hover { color: var(--orange); }
+nav ul a::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -4px;
+  height: 2px; background: var(--orange); transform: scaleX(0);
+  transform-origin: left; transition: transform 0.3s;
+}
+nav ul a:hover::after { transform: scaleX(1); }
+
+.cta-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--ink); color: var(--paper);
+  padding: 12px 22px; border-radius: 100px;
+  font-size: 14px; font-weight: 500; text-decoration: none;
+  transition: all 0.25s; border: none; cursor: pointer;
+}
+.cta-btn:hover { background: var(--orange); transform: translateY(-2px); }
+.cta-btn.outline { background: transparent; color: var(--ink); border: 1.5px solid var(--ink); }
+.cta-btn.outline:hover { background: var(--ink); color: var(--paper); }
+.cta-btn.orange { background: var(--orange); }
+.cta-btn.orange:hover { background: var(--orange-deep); }
+.cta-btn .arrow { transition: transform 0.25s; }
+.cta-btn:hover .arrow { transform: translateX(4px); }
+
+@media (max-width: 768px) {
+  nav.top { padding: 12px 16px; gap: 10px; }
+  nav ul { display: none; }
+  .brand { gap: 3px; }
+  .brand-logos { gap: 8px; }
+  .brand img.logo-belive { height: 22px; }
+  .brand img.logo-vitrox { height: 26px; }
+  .brand .x { font-size: 12px; }
+  .brand-tagline { font-size: 8px; letter-spacing: 0.1em; }
+  nav.top .cta-btn {
+    background: var(--orange); color: white;
+    padding: 9px 16px; font-size: 13px; flex: 0 0 auto;
+  }
+  nav.top .cta-btn .arrow { display: none; }
+}
+
+/* ---------- HERO ---------- */
+.hero {
+  min-height: 100vh;
+  padding: 140px 40px 80px;
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 60px;
+  align-items: center;
+  overflow: hidden;
+  background-color: var(--paper);
+  background-image:
+    linear-gradient(90deg,
+      var(--paper) 0%,
+      rgba(250,247,242,0.94) 28%,
+      rgba(250,247,242,0.72) 50%,
+      rgba(250,247,242,0.38) 80%,
+      rgba(250,247,242,0.25) 100%),
+    url('BeLive_MIA_Campus.jpg');
+  background-size: cover, cover;
+  background-position: center, center center;
+  background-repeat: no-repeat, no-repeat;
+}
+
+.hero::before {
+  content: ''; position: absolute;
+  top: -200px; right: -200px;
+  width: 700px; height: 700px;
+  background: radial-gradient(circle, var(--orange) 0%, transparent 65%);
+  opacity: 0.12; z-index: 0;
+  pointer-events: none;
+}
+
+.hero-content { position: relative; z-index: 2; max-width: 720px; margin-left: 0; margin-right: auto; text-align: left; }
+
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 12px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.18em;
+  color: var(--orange-deep);
+  padding: 8px 16px;
+  background: var(--orange-soft);
+  border-radius: 100px;
+  margin-bottom: 28px;
+  animation: fadeUp 0.8s ease forwards;
+}
+.eyebrow .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); animation: pulse 2s infinite; }
+@keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.3); } }
+
+h1.hero-title {
+  font-family: 'Poppins', sans-serif;
+  font-size: clamp(48px, 6.5vw, 96px);
+  font-weight: 400;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+  margin-bottom: 32px;
+  font-variation-settings: "opsz" 144, "SOFT" 30;
+}
+h1.hero-title em {
+  font-style: italic; color: var(--orange);
+  font-weight: 500;
+  font-variation-settings: "opsz" 144, "SOFT" 100;
+}
+h1.hero-title .underline {
+  position: relative; display: inline-block;
+}
+h1.hero-title .underline::after {
+  content: ''; position: absolute; bottom: 0.05em; left: -0.05em; right: -0.05em;
+  height: 0.18em; background: var(--orange); opacity: 0.25; z-index: -1;
+  transform: skewX(-5deg);
+}
+
+.hero p.lede {
+  font-size: 19px; line-height: 1.5; color: var(--ink-soft);
+  max-width: 540px; margin-bottom: 40px;
+  animation: fadeUp 0.8s 0.3s ease both;
+}
+
+.hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; animation: fadeUp 0.8s 0.5s ease both; }
+
+.hero-stats {
+  display: flex; gap: 40px; margin-top: 60px;
+  padding-top: 32px; border-top: 1px solid var(--line);
+  animation: fadeUp 0.8s 0.7s ease both;
+}
+.stat .num {
+  font-family: 'Poppins', sans-serif; font-size: 44px; font-weight: 500;
+  color: var(--orange-deep); line-height: 1;
+}
+.stat .label {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--ink-soft); margin-top: 6px;
+}
+
+@keyframes fadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Hero visual */
+.hero-visual {
+  position: relative; z-index: 1;
+  height: 620px;
+  animation: fadeUp 1s 0.4s ease both;
+}
+.hero-card {
+  position: absolute;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+}
+.hero-card img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.hero-card.main { width: 75%; height: 75%; top: 0; right: 0; z-index: 2; }
+.hero-card.small {
+  width: 50%; height: 50%; bottom: 0; left: 0;
+  border: 8px solid var(--paper);
+  z-index: 1;
+}
+.hero-card .tag {
+  position: absolute; bottom: 18px; left: 18px;
+  background: rgba(14,14,16,0.85); color: var(--paper);
+  padding: 8px 14px; border-radius: 100px;
+  font-size: 12px; font-weight: 500;
+  backdrop-filter: blur(10px);
+}
+
+.floating-badge {
+  position: absolute;
+  background: var(--paper);
+  border-radius: 100px;
+  padding: 14px 22px;
+  box-shadow: var(--shadow-md);
+  display: flex; align-items: center; gap: 12px;
+  font-size: 13px; font-weight: 500;
+  z-index: 3;
+  animation: float 5s ease-in-out infinite;
+}
+.floating-badge.fb1 { top: 30%; left: -20px; }
+.floating-badge.fb2 { bottom: 8%; right: 8%; animation-delay: -2.5s; }
+.floating-badge .icon {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--orange-soft); color: var(--orange-deep);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+@media (max-width: 980px) {
+  .hero {
+    grid-template-columns: 1fr; padding: 120px 24px 60px; min-height: auto;
+    background-image:
+      linear-gradient(180deg,
+        rgba(250,247,242,0.92) 0%,
+        rgba(250,247,242,0.78) 55%,
+        rgba(250,247,242,0.45) 100%),
+      url('BeLive_MIA_Campus.jpg');
+    background-position: center, center center;
+  }
+  .hero-content { margin-left: 0; }
+  .hero-visual { height: 480px; margin-top: 20px; }
+  .hero-stats { gap: 24px; flex-wrap: wrap; }
+}
+
+/* ---------- SECTION SHARED ---------- */
+section { padding: 100px 40px; position: relative; }
+.section-head { max-width: 720px; margin: 0 auto 64px; text-align: center; }
+.section-head .kicker {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.2em;
+  color: var(--orange-deep); font-weight: 600; margin-bottom: 18px;
+}
+.section-head h2 {
+  font-family: 'Poppins', sans-serif; font-weight: 400;
+  font-size: clamp(36px, 4.5vw, 56px); line-height: 1.05;
+  letter-spacing: -0.025em; margin-bottom: 20px;
+}
+.section-head h2 em { font-style: italic; color: var(--orange); }
+/* This heading is a touch too long for the shared 720px cap and wrapped onto a
+   second line on desktop; widened for this section only so it sits on one row.
+   Still wraps naturally on narrow screens, where the clamp shrinks the type. */
+.how-to-book .section-head { max-width: 940px; }
+/* The payment intro ran to three lines against the shared 600px paragraph cap.
+   Widened for this section only. Deliberately generous rather than sitting on
+   the two-line threshold, since Poppins is wider than the fallback this was
+   measured with. */
+.payment-ref .section-head { max-width: 860px; }
+.payment-ref .section-head p { max-width: 820px; }
+/* Same treatment for the Why-BeLive intro, which wrapped onto a second line.
+   Needs 657px for one line in the fallback face measured here; 820px leaves
+   room for Poppins, which is wider. */
+.why-belive .section-head { max-width: 860px; }
+.why-belive .section-head p { max-width: 820px; }
+/* Hold the heading at the original width so it keeps breaking after "Students";
+   the wider head would otherwise split it mid-phrase as "Students Choose /
+   BeLive." */
+.why-belive .section-head h2 { max-width: 720px; margin-left: auto; margin-right: auto; }
+.section-head p { color: var(--ink-soft); font-size: 17px; max-width: 600px; margin: 0 auto; }
+
+@media (max-width: 768px) { section { padding: 70px 20px; } }
+
+/* ---------- BENEFITS ---------- */
+.benefits {
+  background: var(--paper-warm);
+  border-radius: 40px 40px 0 0;
+}
+.benefits-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 24px; max-width: 1200px; margin: 0 auto;
+}
+.benefit {
+  background: var(--paper); border-radius: 24px;
+  padding: 36px 32px;
+  transition: transform 0.3s, box-shadow 0.3s;
+  position: relative; overflow: hidden;
+}
+.benefit:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+.benefit .num {
+  font-family: 'Poppins', sans-serif; font-size: 80px; font-weight: 300;
+  color: var(--orange); opacity: 0.18; line-height: 1;
+  position: absolute; top: 10px; right: 24px; font-style: italic;
+}
+.benefit h3 {
+  font-family: 'Poppins', sans-serif; font-weight: 500;
+  font-size: 24px; margin-bottom: 14px; letter-spacing: -0.01em;
+}
+.benefit p { color: var(--ink-soft); font-size: 15px; line-height: 1.6; }
+
+@media (max-width: 768px) { .benefits-grid { grid-template-columns: 1fr; } }
+
+/* ---------- WHY CHOOSE BELIVE ---------- */
+.why-belive {
+  background: linear-gradient(180deg, var(--paper) 0%, #FDF8F1 100%);
+  position: relative; overflow: hidden;
+}
+.why-belive::before {
+  content: ''; position: absolute;
+  top: -160px; right: -160px;
+  width: 480px; height: 480px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,176,122,0.35) 0%, transparent 70%);
+  pointer-events: none;
+}
+.why-belive::after {
+  content: ''; position: absolute;
+  bottom: -200px; left: -160px;
+  width: 460px; height: 460px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,191,166,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.why-belive .section-head { margin-bottom: 56px; position: relative; z-index: 1; }
+.why-grid {
+  position: relative; z-index: 1;
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+}
+.why-card {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFFBF5 100%);
+  border: 1px solid rgba(14,14,16,0.06);
+  border-radius: 22px;
+  padding: 28px 22px 24px;
+  transition: transform 0.35s cubic-bezier(0.22,0.61,0.36,1),
+              box-shadow 0.35s, border-color 0.35s;
+  position: relative; overflow: hidden;
+  counter-increment: whycount;
+}
+.why-card::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, var(--orange) 0%, #FFB07A 100%);
+  transform: scaleX(0); transform-origin: left;
+  transition: transform 0.4s ease;
+}
+.why-card::after {
+  content: '0' counter(whycount);
+  position: absolute; top: 16px; right: 18px;
+  font-family: 'Poppins', sans-serif;
+  font-size: 13px; font-weight: 600;
+  color: var(--orange-deep); opacity: 0.25;
+  letter-spacing: 0.04em;
+  transition: opacity 0.3s;
+}
+.why-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255,107,26,0.45);
+  box-shadow: 0 28px 50px -22px rgba(255,107,26,0.4);
+}
+.why-card:hover::before { transform: scaleX(1); }
+.why-card:hover::after { opacity: 0.6; }
+.why-card .why-icon {
+  width: 58px; height: 58px; border-radius: 18px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 30px; line-height: 1;
+  background: linear-gradient(135deg, var(--orange-soft) 0%, #FFD8B6 100%);
+  margin-bottom: 18px;
+  box-shadow: 0 10px 22px -10px rgba(255,107,26,0.45);
+  transition: transform 0.4s cubic-bezier(0.22,0.61,0.36,1);
+}
+.why-card:hover .why-icon { transform: scale(1.08) rotate(-4deg); }
+.why-card h3 {
+  font-family: 'Poppins', sans-serif; font-weight: 600;
+  font-size: 16px; letter-spacing: -0.01em;
+  color: var(--ink); margin-bottom: 8px;
+}
+.why-card p {
+  font-size: 13px; line-height: 1.6;
+  color: var(--ink-soft); opacity: 0.78;
+}
+.why-grid { counter-reset: whycount; }
+.why-outro {
+  position: relative; z-index: 1;
+  margin: 64px auto 0; max-width: 880px;
+  text-align: center;
+  padding: 56px 40px;
+  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-deep) 100%);
+  color: white; border-radius: 32px;
+  box-shadow: 0 32px 60px -22px rgba(255,107,26,0.5);
+  overflow: hidden;
+}
+.why-outro::before, .why-outro::after {
+  content: ''; position: absolute; border-radius: 50%;
+  pointer-events: none;
+}
+.why-outro::before {
+  top: -120px; right: -80px;
+  width: 320px; height: 320px;
+  background: rgba(255,255,255,0.12);
+}
+.why-outro::after {
+  bottom: -140px; left: -100px;
+  width: 300px; height: 300px;
+  background: rgba(255,255,255,0.08);
+}
+.why-outro h3 {
+  position: relative; z-index: 1;
+  font-family: 'Poppins', sans-serif; font-weight: 600;
+  font-size: clamp(28px, 3.4vw, 40px);
+  letter-spacing: -0.02em; margin-bottom: 14px;
+  color: white;
+  display: inline-flex; align-items: center; gap: 14px;
+}
+.why-outro h3::before, .why-outro h3::after {
+  content: '✦'; font-size: 18px;
+  color: rgba(255,255,255,0.75);
+}
+.why-outro p {
+  position: relative; z-index: 1;
+  color: rgba(255,255,255,0.92);
+  font-size: 16px; line-height: 1.6;
+  max-width: 580px; margin: 0 auto;
+}
+@media (max-width: 1024px) {
+  .why-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .why-grid { grid-template-columns: 1fr; }
+  .why-outro { padding: 40px 24px; margin-top: 44px; border-radius: 24px; }
+  .why-outro h3 { gap: 10px; }
+  .why-outro h3::before, .why-outro h3::after { font-size: 14px; }
+}
+
+/* ---------- BUILT TOGETHER ---------- */
+.built-together { background: var(--paper); padding: 70px 40px; }
+.built-together-card {
+  max-width: 1100px; margin: 0 auto;
+  background: linear-gradient(135deg, #FFFFFF 0%, var(--orange-soft) 100%);
+  border-radius: 28px;
+  padding: 44px 56px;
+  border: 1px solid rgba(14,14,16,0.06);
+  box-shadow: 0 30px 60px -25px rgba(14,14,16,0.18);
+  position: relative; overflow: hidden;
+}
+.built-together-top {
+  display: grid; grid-template-columns: auto 1fr; gap: 44px;
+  align-items: center;
+}
+.built-together-card::before {
+  content: ''; position: absolute;
+  top: -80px; right: -80px;
+  width: 260px; height: 260px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,107,26,0.22) 0%, transparent 70%);
+  pointer-events: none;
+}
+.built-together-logos {
+  display: flex; align-items: center; gap: 18px;
+  position: relative; z-index: 1;
+}
+.built-together-logos img { height: 56px; width: auto; display: block; }
+.built-together-logos img.logo-campus { height: 56px; }
+.built-together-logos .bt-x {
+  font-size: 26px; color: var(--ink); opacity: 0.3; font-style: italic;
+}
+.built-together-text { position: relative; z-index: 1; }
+.built-together-text .kicker {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.2em;
+  text-transform: uppercase; color: var(--orange-deep);
+  margin-bottom: 10px;
+}
+.built-together-text h2 {
+  font-family: 'Poppins', sans-serif; font-weight: 600;
+  font-size: clamp(24px, 2.6vw, 30px);
+  letter-spacing: -0.02em; color: var(--ink);
+  margin-bottom: 8px;
+}
+.built-together-text h2 em { font-style: normal; color: var(--orange); }
+.built-together-text p {
+  font-size: 15px; line-height: 1.55; color: var(--ink-soft);
+}
+.built-together-photos {
+  position: relative; z-index: 1;
+  margin-top: 36px;
+  display: grid; grid-template-columns: 1fr; justify-items: center; gap: 18px;
+}
+.built-together-photos figure {
+  margin: 0; border-radius: 18px; overflow: hidden;
+  width: 100%; max-width: 660px;
+  aspect-ratio: 1000 / 651;
+  box-shadow: 0 18px 36px -20px rgba(14,14,16,0.4);
+  border: 1px solid rgba(255,255,255,0.5);
+}
+.built-together-photos img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform 0.5s ease;
+}
+.built-together-photos figure:hover img { transform: scale(1.05); }
+/* Two photos sit side by side and drop to a stack on a narrow screen. */
+.built-together-photos.two-up { grid-template-columns: 1fr 1fr; gap: 20px; }
+.built-together-photos.two-up figure { max-width: none; }
+@media (max-width: 768px) {
+  .built-together-card { padding: 32px 22px; text-align: center; }
+  .built-together-top { grid-template-columns: 1fr; gap: 24px; }
+  .built-together-logos { justify-content: center; flex-wrap: wrap; gap: 12px; }
+  .built-together-logos img { height: 38px; max-width: 42%; object-fit: contain; }
+  .built-together-logos img.logo-campus { height: 28px; }
+  .built-together-photos.two-up { grid-template-columns: 1fr; }
+  .built-together-photos { grid-template-columns: 1fr; gap: 14px; margin-top: 28px; }
+  .built-together { padding: 50px 16px; }
+}
+
+/* ---------- WHY BELIVE: GROUPS ---------- */
+.why-groups {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; gap: 28px;
+  position: relative; z-index: 1;
+}
+.why-group {
+  --group-accent: var(--orange);
+  --group-accent-soft: rgba(255,107,26,0.12);
+  background: white;
+  border: 1px solid rgba(14,14,16,0.06);
+  border-radius: 24px;
+  padding: 32px 32px 28px;
+  position: relative;
+}
+.why-group::before {
+  content: ''; position: absolute;
+  top: 0; left: 24px; right: 24px; height: 4px;
+  border-radius: 0 0 6px 6px;
+  background: var(--group-accent);
+}
+.why-group.group-comfort { --group-accent: #41C0BE; --group-accent-soft: rgba(65,192,190,0.14); }
+.why-group.group-worry   { --group-accent: var(--orange-deep); --group-accent-soft: rgba(229,83,10,0.12); }
+.why-group-head {
+  display: flex; align-items: baseline; flex-wrap: wrap; gap: 14px;
+  margin-bottom: 22px;
+}
+.why-group-title {
+  font-family: 'Poppins', sans-serif; font-weight: 600;
+  font-size: 22px; color: var(--ink); letter-spacing: -0.01em;
+}
+.why-group-title em { font-style: normal; color: var(--group-accent); }
+.why-group-sub { font-size: 13px; color: var(--ink-soft); opacity: 0.75; }
+.why-group-grid {
+  display: grid; gap: 16px;
+  grid-template-columns: repeat(4, 1fr);
+}
+.why-group.group-comfort .why-group-grid,
+.why-group.group-worry .why-group-grid { grid-template-columns: repeat(3, 1fr); }
+.why-tile {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFFBF5 100%);
+  border: 1px solid rgba(14,14,16,0.06);
+  border-radius: 16px;
+  padding: 18px 18px 16px;
+  transition: transform 0.25s, box-shadow 0.25s, border-color 0.25s;
+}
+.why-tile:hover {
+  transform: translateY(-4px);
+  border-color: var(--group-accent);
+  box-shadow: 0 18px 30px -18px var(--group-accent-soft);
+}
+.why-tile .tile-icon {
+  width: 42px; height: 42px; border-radius: 12px;
+  background: var(--group-accent-soft);
+  color: var(--group-accent);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; line-height: 1;
+  margin-bottom: 12px;
+}
+.why-tile h4 {
+  font-family: 'Poppins', sans-serif; font-weight: 600;
+  font-size: 14px; letter-spacing: -0.01em;
+  color: var(--ink); margin-bottom: 4px;
+}
+.why-tile p {
+  font-size: 12.5px; line-height: 1.5;
+  color: var(--ink-soft); opacity: 0.8;
+}
+.section-cta-row {
+  display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;
+  margin: 40px auto 0; padding: 0 20px;
+  position: relative; z-index: 1;
+}
+@media (max-width: 1024px) {
+  .why-group-grid,
+  .why-group.group-comfort .why-group-grid,
+  .why-group.group-worry .why-group-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 560px) {
+  .why-group-grid,
+  .why-group.group-comfort .why-group-grid,
+  .why-group.group-worry .why-group-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+  .why-group { padding: 26px 18px; }
+  .why-tile { padding: 16px 14px; }
+  .why-tile h4 { font-size: 13.5px; }
+  .why-tile p { font-size: 12px; }
+}
+
+/* ---------- ROOM CARD CTA ---------- */
+.room-card .room-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 14px;
+  background: var(--orange); color: white;
+  border-radius: 100px; padding: 9px 18px;
+  font-size: 13px; font-weight: 500;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+}
+.room-card .room-cta:hover { background: var(--orange-deep); transform: translateX(2px); }
+
+/* ---------- HOW TO BOOK ---------- */
+.how-to-book { background: var(--paper-warm); position: relative; overflow: hidden; }
+.how-to-book::before {
+  content: ''; position: absolute;
+  top: -140px; left: 50%; transform: translateX(-50%);
+  width: 600px; height: 300px;
+  background: radial-gradient(circle, rgba(255,176,122,0.28) 0%, transparent 70%);
+  pointer-events: none;
+}
+.how-steps {
+  max-width: 1100px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 22px;
+  position: relative; z-index: 1;
+}
+/* Dashed connector line behind the top badges (desktop) */
+.how-steps::before {
+  content: ''; position: absolute;
+  top: 56px; left: 12%; right: 12%; height: 3px;
+  background-image: linear-gradient(90deg, var(--orange) 0 60%, transparent 0);
+  background-size: 16px 3px; background-repeat: repeat-x;
+  opacity: 0.4; z-index: 0;
+}
+.how-step {
+  position: relative; z-index: 1;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFFBF5 100%);
+  border-radius: 22px; padding: 32px 24px 26px;
+  border: 1px solid rgba(14,14,16,0.06);
+  box-shadow: 0 14px 30px -22px rgba(14,14,16,0.25);
+  transition: transform 0.3s cubic-bezier(.22,.61,.36,1), box-shadow 0.3s, border-color 0.3s;
+}
+.how-step:hover {
+  transform: translateY(-8px);
+  border-color: rgba(255,107,26,0.4);
+  box-shadow: 0 28px 46px -22px rgba(255,107,26,0.4);
+}
+.how-step-top {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 18px;
+}
+.how-step .step-num {
+  width: 46px; height: 46px; border-radius: 50%;
+  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-deep) 100%);
+  color: white;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-family: 'Poppins', sans-serif; font-weight: 700;
+  font-size: 18px;
+  box-shadow: 0 8px 18px -6px rgba(255,107,26,0.6);
+  position: relative; z-index: 1;
+}
+.how-step .step-emoji {
+  font-size: 30px; line-height: 1;
+  transition: transform 0.4s cubic-bezier(.22,.61,.36,1);
+}
+.how-step:hover .step-emoji { transform: scale(1.18) rotate(-6deg); }
+.how-step h4 {
+  font-family: 'Poppins', sans-serif; font-weight: 600;
+  font-size: 17px; color: var(--ink); margin-bottom: 8px;
+}
+.how-step p { font-size: 13.5px; line-height: 1.6; color: var(--ink-soft); opacity: 0.82; }
+@media (max-width: 1024px) {
+  .how-steps { grid-template-columns: repeat(2, 1fr); }
+  .how-steps::before { display: none; }
+}
+@media (max-width: 560px) {
+  .how-steps { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .how-step { padding: 22px 18px 20px; }
+}
+
+/* ---------- REFERENCE CALCULATION OF PAYMENT ---------- */
+.payment-ref { background: var(--paper); }
+.payment-card {
+  max-width: none; margin: 0 auto;
+  background: white;
+  border-radius: 24px; border: 1px solid var(--line);
+  box-shadow: 0 24px 50px -28px rgba(14,14,16,0.18);
+  overflow: hidden;
+}
+.payment-row {
+  display: grid; grid-template-columns: 1fr auto;
+  padding: 18px 28px; gap: 16px;
+  border-bottom: 1px solid var(--line); align-items: center;
+}
+.payment-row:last-of-type { border-bottom: none; }
+.payment-row .pr-label { font-size: 15px; color: var(--ink); font-weight: 500; }
+.payment-row .pr-note  { display: block; font-size: 12px; color: var(--ink-soft); opacity: 0.7; margin-top: 2px; font-weight: 400; }
+.payment-row .pr-value { font-family: 'Poppins', sans-serif; font-weight: 600; font-size: 18px; color: var(--orange-deep); white-space: nowrap; }
+.payment-row.total { background: var(--orange-soft); padding: 22px 28px; }
+.payment-row.total .pr-label { font-size: 17px; font-weight: 600; }
+.payment-row.total .pr-value { font-size: 22px; color: var(--orange-deep); }
+.payment-disclaimer {
+  max-width: 1100px; margin: 18px auto 0;
+  font-size: 12px; color: var(--ink-soft); opacity: 0.65;
+  text-align: center; line-height: 1.55; padding: 0 20px;
+}
+
+/* Payment calculator */
+.calc-wrap { max-width: 1200px; margin: 0 auto; }
+.calc-controls {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px;
+  margin-bottom: 22px;
+}
+@media (max-width: 960px) {
+  .calc-controls { grid-template-columns: repeat(2, 1fr); }
+}
+.calc-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.calc-field span {
+  font-size: 11px; font-weight: 600; letter-spacing: 0.08em;
+  text-transform: uppercase; color: var(--ink-soft); opacity: 0.75;
+}
+.calc-field select {
+  appearance: none; -webkit-appearance: none;
+  font-family: inherit; font-size: 13px; font-weight: 500; color: var(--ink);
+  background: white; border: 1.5px solid var(--line);
+  border-radius: 12px; padding: 11px 36px 11px 14px; cursor: pointer;
+  width: 100%; min-width: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23E5530A' stroke-width='2.5'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.calc-field select:hover { border-color: var(--orange); }
+.calc-field select:focus { outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,107,26,0.15); }
+.payment-row.group-head {
+  background: rgba(14,14,16,0.03);
+  padding: 12px 28px;
+}
+.payment-row.group-head .pr-label {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--ink-soft); opacity: 0.7;
+}
+.payment-row .pr-value.muted { color: var(--ink-soft); opacity: 0.7; font-weight: 500; }
+.payment-row .pr-value.discount { color: #14B8A6; }
+.payment-row .pr-value .pr-was {
+  text-decoration: line-through;
+  color: var(--ink-soft); opacity: 0.6;
+  font-weight: 500; font-size: 15px; margin-right: 6px;
+}
+.payment-row.note { display: block; padding: 10px 28px 14px; }
+.payment-row.note .pr-foot { font-size: 12px; color: var(--ink-soft); opacity: 0.75; font-weight: 400; line-height: 1.5; }
+@media (max-width: 560px) {
+  .calc-controls { grid-template-columns: 1fr; }
+}
+
+/* ---------- FINAL CTA — RENT SAFE, STAY HAPPY ---------- */
+.final-cta {
+  padding: 100px 40px;
+  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-deep) 100%);
+  color: white; position: relative; overflow: hidden;
+}
+.final-cta::before, .final-cta::after {
+  content: ''; position: absolute; border-radius: 50%; pointer-events: none;
+}
+.final-cta::before { top: -120px; right: -80px; width: 360px; height: 360px; background: rgba(255,255,255,0.1); }
+.final-cta::after  { bottom: -140px; left: -100px; width: 320px; height: 320px; background: rgba(255,255,255,0.08); }
+.final-cta-wrap {
+  max-width: 760px; margin: 0 auto; text-align: center;
+  position: relative; z-index: 1;
+}
+.final-cta h2 {
+  font-family: 'Poppins', sans-serif; font-weight: 600;
+  font-size: clamp(34px, 4.4vw, 52px); letter-spacing: -0.025em;
+  margin-bottom: 16px;
+}
+.final-cta p {
+  font-size: 17px; line-height: 1.55; color: rgba(255,255,255,0.92);
+  margin-bottom: 36px;
+}
+.final-cta-buttons { display: flex; gap: 14px; flex-wrap: wrap; justify-content: center; }
+.fcta-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 15px 26px; border-radius: 100px;
+  font-family: inherit; font-size: 15px; font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.2s, box-shadow 0.2s, background 0.2s, color 0.2s;
+}
+.fcta-btn.primary { background: white; color: var(--orange-deep); box-shadow: 0 12px 28px -12px rgba(14,14,16,0.4); }
+.fcta-btn.primary:hover { transform: translateY(-2px); box-shadow: 0 18px 36px -12px rgba(14,14,16,0.45); }
+.fcta-btn.teal { background: #41C0BE; color: white; box-shadow: 0 12px 28px -12px rgba(65,192,190,0.5); }
+.fcta-btn.teal:hover { background: #34a8a6; transform: translateY(-2px); }
+.fcta-btn.outline { background: transparent; color: white; border: 2px solid rgba(255,255,255,0.75); }
+.fcta-btn.outline:hover { background: white; color: var(--orange-deep); border-color: white; }
+
+/* ---------- WHY RENT ---------- */
+.why {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 80px; max-width: 1200px; margin: 0 auto;
+  align-items: center;
+}
+.why-list { display: flex; flex-direction: column; gap: 4px; }
+.why-item {
+  padding: 24px 0; border-bottom: 1px solid var(--line);
+  display: grid; grid-template-columns: 56px 1fr; gap: 20px;
+  align-items: start; cursor: pointer;
+  transition: padding 0.3s;
+}
+.why-item:hover { padding-left: 12px; }
+.why-item .icon-wrap {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: var(--orange-soft);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--orange-deep);
+  transition: all 0.3s;
+}
+.why-item:hover .icon-wrap { background: var(--orange); color: white; transform: rotate(-8deg); }
+.why-item h4 { font-family: 'Poppins', sans-serif; font-weight: 500; font-size: 19px; margin-bottom: 4px; }
+.why-item p { color: var(--ink-soft); font-size: 14px; line-height: 1.5; }
+
+.why-visual { position: relative; }
+.why-stat-card {
+  background: var(--ink); color: var(--paper);
+  border-radius: 32px; padding: 48px; position: relative;
+  overflow: hidden;
+}
+.why-stat-card::before {
+  content: ''; position: absolute; top: -50%; right: -50%;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: radial-gradient(circle, var(--orange) 0%, transparent 70%);
+  opacity: 0.4;
+}
+.why-stat-card .label {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.2em;
+  color: var(--orange); margin-bottom: 12px; position: relative;
+}
+.why-stat-card .big {
+  font-family: 'Poppins', sans-serif; font-size: clamp(56px, 12vw, 96px); font-weight: 400;
+  line-height: 1; letter-spacing: -0.03em; position: relative;
+}
+.why-stat-card .big em { font-style: italic; color: var(--orange); }
+.why-stat-card .desc { margin-top: 16px; opacity: 0.8; font-size: 15px; position: relative; }
+.why-stat-card .badge {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: 'Poppins', sans-serif; font-size: 11px; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: white; background: rgba(255,107,26,0.95);
+  padding: 6px 14px; border-radius: 100px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 900px) {
+  .why { grid-template-columns: 1fr; gap: 40px; }
+  .why > * { min-width: 0; }
+  .why-stat-card { padding: 36px 28px; }
+}
+
+/* ---------- RESIDENCES ---------- */
+.residences { background: var(--ink); color: var(--paper); }
+.residences .section-head h2 { color: var(--paper); }
+.residences .section-head p { color: rgba(250,247,242,0.7); }
+.residences .section-head .kicker { color: var(--orange); }
+
+.res-tabs {
+  display: flex; justify-content: center; gap: 10px;
+  margin: 0 auto 50px; max-width: 820px; flex-wrap: wrap;
+  padding: 10px; background: rgba(255,255,255,0.06);
+  border-radius: 100px; width: fit-content;
+}
+.res-tab {
+  padding: 16px 40px; border-radius: 100px;
+  font-size: 17px; font-weight: 600;
+  border: none; background: transparent;
+  color: rgba(250,247,242,0.7); cursor: pointer;
+  transition: all 0.3s;
+}
+.res-tab.active { background: var(--orange); color: white; }
+.res-tab:hover:not(.active) { color: var(--paper); }
+@media (max-width: 560px) {
+  .res-tab { padding: 14px 28px; font-size: 15px; }
+}
+
+.res-panel { display: none; max-width: 1280px; margin: 0 auto; }
+.res-panel.active { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; animation: fadeIn 0.5s; }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+/* 3/4 matches the portrait tower shot almost exactly (594x800 is 0.74:1), so the
+   full height of the building is kept. The frame was widened to 3/2 for the old
+   landscape render; that would now crop about half the tower away. */
+.res-photo { position: relative; border-radius: 32px; overflow: hidden; aspect-ratio: 3/4; }
+.res-photo img { width: 100%; height: 100%; object-fit: cover; transition: transform 8s ease; }
+/* Shown in place of the tower shot for residences with no photography on file,
+   so no building is ever illustrated with another building's picture. */
+.res-photo-empty {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; text-align: center; padding: 32px;
+  background: linear-gradient(150deg, rgba(255,107,26,0.18), rgba(255,255,255,0.05));
+  border: 1px dashed rgba(255,255,255,0.20);
+}
+.res-photo-empty .rpe-mark { font-size: 46px; line-height: 1; opacity: 0.45; }
+.res-photo-empty .rpe-name {
+  font-family: 'Poppins', sans-serif; font-size: 22px; font-weight: 500;
+  letter-spacing: -0.01em; color: rgba(250,247,242,0.92);
+}
+.res-photo-empty .rpe-note {
+  font-size: 11px; font-weight: 500; letter-spacing: 0.14em;
+  text-transform: uppercase; color: rgba(250,247,242,0.5);
+}
+.res-panel.active .res-photo img { transform: scale(1.08); }
+.res-photo .photo-tag {
+  position: absolute; top: 24px; left: 24px;
+  background: rgba(14,14,16,0.7); backdrop-filter: blur(10px);
+  padding: 8px 16px; border-radius: 100px; font-size: 12px;
+  font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+}
+
+.res-info .res-name {
+  font-family: 'Poppins', sans-serif; font-weight: 400;
+  font-size: clamp(40px, 5vw, 64px); letter-spacing: -0.03em;
+  line-height: 1; margin-bottom: 12px;
+}
+.res-info .res-name em { font-style: italic; color: var(--orange); }
+.res-info .res-vibe {
+  font-family: 'Poppins', sans-serif; font-size: 28px; color: var(--orange);
+  margin-bottom: 28px; transform: rotate(-1deg); display: inline-block;
+}
+.res-info .res-desc { font-size: 16px; line-height: 1.65; color: rgba(250,247,242,0.8); margin-bottom: 32px; }
+
+.res-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px;
+  padding: 24px 0; margin-bottom: 28px;
+  border-top: 1px solid rgba(255,255,255,0.1);
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.res-stat .v { font-family: 'Poppins', sans-serif; font-size: 28px; color: var(--orange); }
+.res-stat .l { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(250,247,242,0.6); margin-top: 4px; }
+
+.res-facilities { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; }
+.res-facilities span {
+  font-size: 12px; padding: 6px 12px;
+  background: rgba(255,255,255,0.08); border-radius: 100px;
+  color: rgba(250,247,242,0.85);
+}
+.res-facility-photos {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
+  margin-bottom: 28px;
+}
+.res-facility-photos figure {
+  position: relative; margin: 0;
+  flex: 0 1 calc(33.333% - 8px);
+  border-radius: 14px; overflow: hidden;
+  aspect-ratio: 4 / 3;
+  box-shadow: 0 12px 28px -16px rgba(0,0,0,0.6);
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.res-facility-photos img {
+  width: 100%; height: 100%; object-fit: cover; display: block;
+  transition: transform 0.4s ease;
+}
+.res-facility-photos figure:only-child { flex: 0 1 min(440px, 62%); }
+.res-facility-photos.four-up figure { flex: 0 1 calc(25% - 9px); }
+.res-facility-photos figure:hover img { transform: scale(1.04); }
+.res-facility-photos figcaption {
+  position: absolute; left: 10px; bottom: 10px;
+  background: rgba(14,14,16,0.78); color: rgba(250,247,242,0.95);
+  font-size: 11px; font-weight: 500;
+  padding: 5px 10px; border-radius: 100px;
+  backdrop-filter: blur(8px);
+}
+@media (max-width: 700px) {
+  .res-facility-photos figure,
+  .res-facility-photos.four-up figure { flex-basis: 100%; }
+}
+
+/* Room cards */
+.rooms-strip {
+  margin-top: 60px; max-width: 1280px; margin-left: auto; margin-right: auto;
+}
+.rooms-strip h3 {
+  font-family: 'Poppins', sans-serif; font-weight: 400; font-size: 28px;
+  margin-bottom: 10px; letter-spacing: -0.01em;
+}
+.rooms-strip h3 em { font-style: italic; color: var(--orange); }
+.rooms-desc {
+  max-width: none; margin-bottom: 18px;
+  font-size: 15px; line-height: 1.6; color: rgba(250,247,242,0.7);
+}
+.rooms-included {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 26px;
+}
+.rooms-included .ri-intro {
+  font-size: 14px; color: rgba(250,247,242,0.65);
+  align-self: center; margin-right: 4px;
+}
+.rooms-included span:not(.ri-intro) {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 12.5px; font-weight: 500; color: rgba(250,247,242,0.9);
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 6px 12px; border-radius: 100px;
+}
+
+.common-strip {
+  margin-top: 80px; max-width: 1280px; margin-left: auto; margin-right: auto;
+}
+.common-strip .kicker {
+  color: var(--orange);
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.2em;
+  font-weight: 600; margin-bottom: 14px;
+}
+.common-strip h3 {
+  font-family: 'Poppins', sans-serif; font-weight: 400; font-size: 28px;
+  margin-bottom: 12px; letter-spacing: -0.01em;
+}
+.common-strip h3 em { font-style: italic; color: var(--orange); }
+.common-desc {
+  max-width: none; margin-bottom: 16px;
+  font-size: 15px; line-height: 1.6; color: rgba(250,247,242,0.7);
+}
+.common-clean {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; font-weight: 500; color: rgba(250,247,242,0.92);
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 8px 16px; border-radius: 100px;
+  margin-bottom: 28px;
+}
+.common-clean strong { color: var(--orange); font-weight: 700; }
+.common-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+}
+.common-grid.two-up { grid-template-columns: repeat(2, 1fr); }
+/* Route guides — wide, text-heavy infographics, so each runs full width and
+   opens in the lightbox for anyone who needs to read the small print. The
+   readable summary below each one carries the same facts as text, because the
+   graphic's own labels are unreadable at phone width. */
+.route-strip {
+  margin-top: 80px; max-width: 1280px; margin-left: auto; margin-right: auto;
+}
+.route-strip .kicker {
+  color: var(--orange);
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.2em;
+  font-weight: 600; margin-bottom: 14px;
+}
+.route-strip h3 {
+  font-family: 'Poppins', sans-serif; font-weight: 400; font-size: 28px;
+  margin-bottom: 12px; letter-spacing: -0.01em;
+}
+.route-strip h3 em { font-style: italic; color: var(--orange); }
+.route-strip .res-tabs { margin: 26px 0 0; justify-content: flex-start; flex-wrap: wrap; }
+.route-panel { display: none; }
+.route-panel.active { display: block; animation: fadeIn 0.5s; }
+.route-figure {
+  margin: 22px 0 0; border-radius: 18px; overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.08);
+  box-shadow: 0 18px 40px -22px rgba(0,0,0,0.65);
+  cursor: zoom-in;
+}
+.route-figure img { width: 100%; height: auto; display: block; }
+.route-summary {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px; margin-top: 18px;
+}
+.route-summary > div {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px; padding: 16px 18px;
+}
+.route-summary .v {
+  font-family: 'Poppins', sans-serif; font-size: 20px; color: var(--orange);
+  margin-bottom: 2px;
+}
+.route-summary .l {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.12em;
+  color: rgba(250,247,242,0.55);
+}
+.route-steps {
+  margin: 16px 0 0; font-size: 15px; line-height: 1.7;
+  color: rgba(250,247,242,0.75);
+}
+.route-steps strong { color: var(--paper); font-weight: 600; }
+.route-note {
+  margin: 20px 0 0; font-size: 12.5px; line-height: 1.6;
+  color: rgba(250,247,242,0.48);
+}
+.route-soon {
+  margin-top: 22px; padding: 30px; border-radius: 18px;
+  border: 1px dashed rgba(255,255,255,0.18);
+  color: rgba(250,247,242,0.6); font-size: 15px;
+}
+@media (max-width: 768px) {
+  .route-strip h3 { font-size: 22px; }
+  .route-summary { grid-template-columns: 1fr; }
+}
+.common-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px; overflow: hidden;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.common-card:hover { transform: translateY(-4px); border-color: var(--orange); }
+.common-card .common-img { aspect-ratio: 4/3; overflow: hidden; }
+.common-card .common-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+.common-card:hover .common-img img { transform: scale(1.05); }
+.common-card .common-label {
+  padding: 16px 20px;
+  font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 500;
+  text-align: center;
+}
+@media (max-width: 900px) {
+  .common-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 540px) {
+  .common-grid { grid-template-columns: 1fr; }
+}
+
+/* Section divider */
+.section-divider {
+  border: 0; height: 1px;
+  background: linear-gradient(90deg, transparent 0%, rgba(14,14,16,0.18) 50%, transparent 100%);
+  max-width: 1280px; margin: 0 auto;
+}
+
+/* Awards section */
+.awards { background: #ECE7DA; color: var(--ink); }
+.awards-wrap {
+  max-width: 1280px; margin: 0 auto;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
+  align-items: center;
+}
+.awards-copy .kicker {
+  color: var(--orange);
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.2em;
+  font-weight: 600; margin-bottom: 14px;
+}
+.awards-copy h3 {
+  font-family: 'Poppins', sans-serif; font-weight: 400;
+  font-size: clamp(28px, 3vw, 36px);
+  margin-bottom: 32px; letter-spacing: -0.01em; color: var(--ink);
+}
+.awards-copy h3 em { font-style: italic; color: var(--orange); }
+.awards-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px 20px;
+  align-items: center;
+}
+.awards-grid img {
+  width: 100%; height: auto; max-height: 110px;
+  object-fit: contain;
+  opacity: 0.9; transition: opacity 0.3s, transform 0.3s;
+}
+.awards-grid img:hover { opacity: 1; transform: translateY(-2px); }
+.awards-team-photo {
+  border-radius: 28px; overflow: hidden;
+  box-shadow: 0 30px 60px -20px rgba(14,14,16,0.25);
+}
+.awards-team-photo img {
+  display: block; width: 100%; height: auto;
+}
+@media (max-width: 900px) {
+  .awards-wrap { grid-template-columns: 1fr; gap: 40px; }
+}
+@media (max-width: 540px) {
+  .awards-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+}
+
+/* Smart lock spotlight */
+.lock-spotlight { background: var(--paper-warm); }
+.lock-wrap {
+  max-width: 1280px; margin: 0 auto;
+  display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 60px;
+  align-items: center;
+}
+.lock-photos {
+  display: grid; grid-template-columns: 1fr; gap: 16px;
+  max-width: 540px;
+}
+.lock-photo {
+  position: relative;
+}
+.lock-photo img {
+  display: block; width: 100%; height: auto;
+  border-radius: 18px;
+}
+.lock-tag {
+  position: absolute; left: 12px; bottom: 12px;
+  background: var(--ink); color: var(--paper);
+  padding: 8px 14px; border-radius: 100px;
+  font-size: 12px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.lock-tag::before {
+  content: '🔒'; font-size: 14px;
+}
+.lock-copy .kicker {
+  color: var(--orange);
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.2em;
+  font-weight: 600; margin-bottom: 14px;
+}
+.lock-copy h2 {
+  font-family: 'Poppins', sans-serif; font-weight: 400;
+  font-size: clamp(32px, 4vw, 44px); letter-spacing: -0.02em;
+  margin-bottom: 20px; color: var(--ink);
+}
+.lock-copy h2 em { font-style: italic; color: var(--orange); }
+.lock-copy p {
+  font-size: 17px; line-height: 1.55; color: var(--ink-soft);
+  margin-bottom: 26px;
+}
+.lock-points {
+  list-style: none; padding: 0; display: grid; gap: 12px;
+}
+.lock-points li {
+  position: relative; padding-left: 28px;
+  font-size: 15px; line-height: 1.5; color: var(--ink-soft);
+}
+.lock-points li::before {
+  content: ''; position: absolute; left: 0; top: 9px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 0 4px rgba(238,108,77,0.15);
+}
+.lock-points strong { color: var(--ink); font-weight: 600; }
+.lock-outro {
+  margin-top: 24px; padding-top: 22px;
+  border-top: 1px solid var(--line);
+  font-size: 15px; line-height: 1.6; color: var(--ink-soft);
+}
+.lock-outro strong { color: var(--orange-deep); font-weight: 600; }
+@media (max-width: 900px) {
+  .lock-wrap { grid-template-columns: 1fr; gap: 48px; }
+  .lock-photos { max-width: 420px; margin: 0 auto; }
+}
+
+/* Smart utilities spotlight */
+.utility-spotlight { background: #FFF4E0; }
+.utility-wrap {
+  max-width: 1280px; margin: 0 auto;
+  display: grid; grid-template-columns: 1.1fr 0.9fr; gap: 60px;
+  align-items: center;
+}
+.utility-photo {
+  position: relative; max-width: 520px; margin: 0 auto;
+}
+.utility-photo img {
+  display: block; width: 100%; height: auto;
+  filter: drop-shadow(0 30px 40px rgba(14,14,16,0.22));
+}
+.utility-chip {
+  position: absolute; left: 12px; bottom: 12px;
+  background: var(--ink); color: var(--paper);
+  padding: 8px 14px; border-radius: 100px;
+  font-size: 12px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 8px;
+  white-space: nowrap;
+}
+.utility-chip::before { content: '⚡'; font-size: 14px; }
+.utility-copy .kicker {
+  color: var(--orange);
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.2em;
+  font-weight: 600; margin-bottom: 14px;
+}
+.utility-copy h2 {
+  font-family: 'Poppins', sans-serif; font-weight: 400;
+  font-size: clamp(32px, 4vw, 44px); letter-spacing: -0.02em;
+  margin-bottom: 20px; color: var(--ink);
+}
+.utility-copy h2 em { font-style: italic; color: var(--orange); }
+.utility-copy p {
+  font-size: 17px; line-height: 1.55; color: var(--ink-soft);
+  margin-bottom: 26px;
+}
+.utility-points {
+  list-style: none; padding: 0; display: grid; gap: 12px;
+}
+.utility-points li {
+  position: relative; padding-left: 28px;
+  font-size: 15px; line-height: 1.5; color: var(--ink-soft);
+}
+.utility-points li::before {
+  content: ''; position: absolute; left: 0; top: 9px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 0 4px rgba(238,108,77,0.15);
+}
+.utility-points strong { color: var(--ink); font-weight: 600; }
+.utility-outro {
+  margin-top: 24px; padding-top: 22px;
+  border-top: 1px solid rgba(14,14,16,0.1);
+  font-size: 15px; line-height: 1.6; color: var(--ink-soft);
+}
+.utility-outro strong { color: var(--orange-deep); font-weight: 600; }
+@media (max-width: 900px) {
+  .utility-wrap { grid-template-columns: 1fr; gap: 48px; }
+  .utility-photo { max-width: 420px; margin: 0 auto; order: 1; }
+  .utility-copy { order: 2; }
+  .utility-chip { left: 8px; bottom: 8px; font-size: 11px; padding: 7px 12px; }
+}
+
+/* Emergency support spotlight (image on the left, cream background) */
+.emergency-spotlight { background: #FFF4E0; }
+.emergency-wrap {
+  max-width: 1280px; margin: 0 auto;
+  display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 60px;
+  align-items: center;
+}
+.emergency-photo {
+  position: relative; max-width: 520px; margin: 0 auto;
+}
+.emergency-photo img {
+  display: block; width: 100%; height: auto;
+  filter: drop-shadow(0 30px 40px rgba(14,14,16,0.22));
+}
+.emergency-chip {
+  position: absolute; left: 12px; bottom: 12px;
+  background: var(--ink); color: var(--paper);
+  padding: 8px 14px; border-radius: 100px;
+  font-size: 12px; font-weight: 500;
+  display: inline-flex; align-items: center; gap: 8px;
+  white-space: nowrap;
+}
+.emergency-chip::before { content: '☎️'; font-size: 14px; }
+.emergency-copy .kicker {
+  color: var(--orange);
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.2em;
+  font-weight: 600; margin-bottom: 14px;
+}
+.emergency-copy h2 {
+  font-family: 'Poppins', sans-serif; font-weight: 400;
+  font-size: clamp(32px, 4vw, 44px); letter-spacing: -0.02em;
+  margin-bottom: 20px; color: var(--ink);
+}
+.emergency-copy h2 em { font-style: italic; color: var(--orange); }
+.emergency-copy p {
+  font-size: 17px; line-height: 1.55; color: var(--ink-soft);
+  margin-bottom: 26px;
+}
+.emergency-points {
+  list-style: none; padding: 0; display: grid; gap: 12px;
+}
+.emergency-points li {
+  position: relative; padding-left: 28px;
+  font-size: 15px; line-height: 1.5; color: var(--ink-soft);
+}
+.emergency-points li::before {
+  content: ''; position: absolute; left: 0; top: 9px;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 0 4px rgba(238,108,77,0.15);
+}
+.emergency-points strong { color: var(--ink); font-weight: 600; }
+.emergency-outro {
+  margin-top: 24px; padding-top: 22px;
+  border-top: 1px solid rgba(14,14,16,0.1);
+  font-size: 15px; line-height: 1.6; color: var(--ink-soft);
+}
+.emergency-outro strong { color: var(--orange-deep); font-weight: 600; }
+@media (max-width: 900px) {
+  .emergency-wrap { grid-template-columns: 1fr; gap: 48px; }
+  .emergency-photo { max-width: 420px; margin: 0 auto; }
+  .emergency-chip { left: 8px; bottom: 8px; font-size: 11px; padding: 7px 12px; }
+}
+
+.rooms-carousel { position: relative; }
+.rooms-viewport { overflow: hidden; }
+.rooms-track { display: flex; gap: 20px; transition: transform 0.45s cubic-bezier(.22,.61,.36,1); will-change: transform; }
+.rooms-track .room-card { flex: 0 0 calc((100% - 40px) / 3); }
+.carousel-arrow {
+  position: absolute; top: calc(50% - 24px); transform: translateY(-50%);
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(20,20,20,0.7); border: 1px solid rgba(255,255,255,0.15);
+  color: var(--ink); cursor: pointer; z-index: 2;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; line-height: 1; padding: 0 0 2px;
+  transition: background 0.2s, border-color 0.2s, opacity 0.2s;
+}
+.carousel-arrow:hover:not(:disabled) { background: var(--orange); border-color: var(--orange); color: #fff; }
+.carousel-arrow.prev { left: -22px; }
+.carousel-arrow.next { right: -22px; }
+.carousel-arrow:disabled { opacity: 0.25; cursor: default; }
+
+.room-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px; overflow: hidden;
+  transition: transform 0.3s, border-color 0.3s;
+}
+.room-card:hover { transform: translateY(-4px); border-color: var(--orange); }
+.room-card .room-img { aspect-ratio: 4/3; overflow: hidden; }
+.room-card .room-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+.room-card:hover .room-img img { transform: scale(1.08); }
+.room-card .room-img-empty {
+  width: 100%; height: 100%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; text-align: center; padding: 12px;
+  background: linear-gradient(135deg, rgba(255,107,26,0.14), rgba(255,255,255,0.05));
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.room-card .room-img-empty span { font-size: 30px; opacity: 0.5; line-height: 1; }
+.room-card .room-img-empty small { font-size: 11px; letter-spacing: 0.08em;
+  text-transform: uppercase; color: rgba(250,247,242,0.55); }
+.room-card .room-body { padding: 18px 20px; }
+.room-card .rt {
+  font-family: 'Poppins', sans-serif; font-size: 17px;
+  font-weight: 500; margin-bottom: 2px;
+}
+.room-card .rsize { font-size: 12px; color: rgba(250,247,242,0.6); margin-bottom: 14px; }
+.room-card .rprice {
+  display: flex; align-items: baseline; gap: 8px;
+}
+.room-card .rprice .old { font-size: 13px; color: rgba(250,247,242,0.4); text-decoration: line-through; }
+.room-card .rprice .now { font-family: 'Poppins', sans-serif; font-size: 22px; color: var(--orange); font-weight: 500; }
+.room-card .rprice .per { font-size: 11px; color: rgba(250,247,242,0.5); }
+.room-card .promo {
+  display: inline-block; font-size: 10px; padding: 3px 8px;
+  background: var(--orange); color: white; border-radius: 100px;
+  text-transform: uppercase; letter-spacing: 0.1em; margin-top: 8px;
+}
+
+@media (max-width: 900px) {
+  .res-panel.active { grid-template-columns: 1fr; }
+  .rooms-track .room-card { flex-basis: calc((100% - 20px) / 2); }
+}
+@media (max-width: 540px) {
+  .rooms-track .room-card { flex-basis: 100%; }
+  .carousel-arrow.prev { left: 4px; }
+  .carousel-arrow.next { right: 4px; }
+}
+
+/* ---------- AMENITIES STRIP ---------- */
+.amenities {
+  background: var(--paper);
+  padding: 100px 40px;
+}
+.amenity-grid {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px;
+}
+.amenity {
+  text-align: center; padding: 32px 20px;
+  border: 1px solid var(--line); border-radius: 20px;
+  transition: all 0.3s;
+  background: white;
+}
+.amenity:hover {
+  border-color: var(--orange);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px -20px rgba(255,107,26,0.3);
+}
+.amenity .ai {
+  width: 56px; height: 56px; margin: 0 auto 16px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--orange-soft); color: var(--orange-deep);
+  border-radius: 50%;
+  transition: all 0.3s;
+}
+.amenity:hover .ai { background: var(--orange); color: white; }
+.amenity .at { font-family: 'Poppins', sans-serif; font-size: 16px; font-weight: 500; }
+
+@media (max-width: 768px) { .amenity-grid { grid-template-columns: repeat(2, 1fr); } }
+
+/* ---------- MAP (Catchment) ---------- */
+.map-section {
+  background: linear-gradient(180deg, var(--paper) 0%, #FDF8F1 100%);
+  position: relative; overflow: hidden;
+}
+.map-section::before {
+  content: ''; position: absolute;
+  top: -180px; right: -180px;
+  width: 520px; height: 520px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,176,122,0.35) 0%, transparent 70%);
+  pointer-events: none;
+}
+.map-section::after {
+  content: ''; position: absolute;
+  bottom: -200px; left: -160px;
+  width: 480px; height: 480px; border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,191,166,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.map-wrap {
+  max-width: 1280px; margin: 0 auto;
+  position: relative; z-index: 1;
+}
+.map-header { margin-bottom: 36px; text-align: left; max-width: none; }
+.market-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-deep) 100%);
+  color: white;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  padding: 9px 18px; border-radius: 100px;
+  margin-bottom: 22px;
+  box-shadow: 0 8px 20px -6px rgba(255,107,26,0.45);
+}
+.market-badge::before {
+  content: ''; width: 6px; height: 6px; border-radius: 50%;
+  background: white; box-shadow: 0 0 0 0 rgba(255,255,255,0.7);
+  animation: badgePulse 1.8s infinite;
+}
+@keyframes badgePulse {
+  0%   { box-shadow: 0 0 0 0 rgba(255,255,255,0.7); }
+  70%  { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,255,255,0); }
+}
+.catchment-title {
+  font-family: 'Poppins', sans-serif; font-weight: 600;
+  font-size: clamp(32px, 4.4vw, 52px); line-height: 1.05;
+  letter-spacing: -0.025em; color: var(--ink);
+  margin-bottom: 12px;
+}
+.catchment-title em {
+  font-style: normal;
+  background: linear-gradient(90deg, var(--orange) 0%, #FFB07A 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.catchment-sub {
+  color: var(--ink-soft); opacity: 0.75;
+  font-size: clamp(15px, 1.4vw, 17px); font-weight: 400;
+  max-width: 560px;
+}
+.map-layout {
+  display: grid; grid-template-columns: 1fr 440px; gap: 24px;
+  align-items: start;
+}
+.map-canvas {
+  position: relative;
+  border-radius: 24px; overflow: hidden;
+  border: 1px solid rgba(14,14,16,0.06);
+  box-shadow: 0 30px 60px -25px rgba(14,14,16,0.25), 0 8px 16px -8px rgba(14,14,16,0.08);
+  background: white;
+}
+#mia-map {
+  height: 760px; width: 100%;
+  z-index: 0;
+}
+/* Desaturate only the basemap tiles - see the tileLayer comment. Markers,
+   tooltips and the catchment rings sit in sibling panes and are unaffected. */
+#mia-map .leaflet-tile-pane {
+  filter: grayscale(0.92) brightness(1.06) contrast(0.94);
+}
+/* Floating overlay cards on the map */
+.map-overlay {
+  position: absolute; z-index: 2;
+  pointer-events: none;
+}
+.map-overlay-top {
+  top: 18px; left: 60px; right: 18px;
+  display: flex; gap: 10px; flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.map-stat-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: white; color: var(--ink);
+  font-size: 12px; font-weight: 500;
+  padding: 8px 14px; border-radius: 100px;
+  box-shadow: 0 6px 18px rgba(14,14,16,0.12);
+  border: 1px solid rgba(14,14,16,0.06);
+}
+.map-stat-chip strong { color: var(--orange-deep); font-weight: 700; }
+.map-stat-chip .chip-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--orange);
+  box-shadow: 0 0 0 3px rgba(255,107,26,0.18);
+}
+.map-overlay-bottom {
+  bottom: 18px; left: 18px;
+  pointer-events: auto;
+}
+.map-legend-card {
+  background: white;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 10px 28px rgba(14,14,16,0.16);
+  border: 1px solid rgba(14,14,16,0.06);
+  min-width: 200px;
+}
+.map-legend-card h4 {
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--ink-soft); opacity: 0.6;
+  margin-bottom: 10px;
+}
+.map-legend-row {
+  display: flex; align-items: center; gap: 8px;
+  font-size: 12px; color: var(--ink);
+  margin-top: 6px;
+}
+.map-legend-row:first-of-type { margin-top: 0; }
+.map-legend-row .lg-dot {
+  width: 12px; height: 12px; border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  flex: 0 0 auto;
+}
+.map-legend-row .lg-star {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--orange); color: white;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 9px; flex: 0 0 auto;
+  box-shadow: 0 2px 8px rgba(255,107,26,0.45);
+}
+.map-legend-row .lg-ring {
+  width: 14px; height: 14px; border-radius: 50%;
+  border: 2px dashed var(--orange); flex: 0 0 auto;
+}
+.map-legend-row .lg-ring-outer {
+  border-style: dotted; opacity: 0.6;
+}
+.ring-label {
+  background: white; color: var(--orange-deep);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 0.06em;
+  padding: 3px 8px; border-radius: 100px;
+  border: 1px solid rgba(255,107,26,0.35);
+  box-shadow: 0 2px 8px rgba(14,14,16,0.12);
+  white-space: nowrap;
+  transform: translate(-50%, -50%);
+}
+.leaflet-control-zoom a {
+  border-radius: 10px !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+  color: var(--ink) !important;
+  background: white !important;
+}
+.leaflet-control-zoom { border: none !important; box-shadow: none !important; }
+.leaflet-control-zoom a:first-child { margin-bottom: 4px; }
+.leaflet-control-attribution {
+  background: rgba(255,255,255,0.85) !important;
+  border-radius: 6px;
+  font-size: 10px !important;
+}
+.map-pin {
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 3px solid white;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.28);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: white; font-weight: 600;
+  transition: transform 0.15s;
+}
+.map-pin:hover { transform: scale(1.15); }
+.map-pin.home {
+  width: 44px; height: 44px; font-size: 18px;
+  background: var(--orange) !important;
+  box-shadow: 0 6px 22px rgba(255,107,26,0.55), 0 0 0 6px rgba(255,107,26,0.18);
+  animation: homePulse 2.4s infinite;
+}
+@keyframes homePulse {
+  0%, 100% { box-shadow: 0 6px 22px rgba(255,107,26,0.55), 0 0 0 6px rgba(255,107,26,0.18); }
+  50%      { box-shadow: 0 6px 22px rgba(255,107,26,0.55), 0 0 0 14px rgba(255,107,26,0.0); }
+}
+.map-pin-label {
+  position: relative;
+  display: inline-flex; align-items: center; gap: 6px;
+  background: var(--ink); color: white;
+  font-size: 12px; font-weight: 600;
+  padding: 7px 14px 7px 12px; border-radius: 100px;
+  box-shadow: 0 6px 18px rgba(14,14,16,0.32);
+  white-space: nowrap;
+}
+.map-pin-label .star { color: var(--orange); font-size: 11px; }
+/* Permanent distance pill on each pin */
+.leaflet-tooltip.dist-label {
+  background: var(--ink); color: white;
+  border: none; border-radius: 100px;
+  padding: 4px 10px; font-size: 11px; font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  box-shadow: 0 4px 12px rgba(14,14,16,0.3);
+  white-space: nowrap;
+}
+.leaflet-tooltip.dist-label::before { display: none; }
+.leaflet-tooltip.res-label {
+  background: #FF6B1A; color: white;
+  border: 2px solid #fff; border-radius: 18px;
+  padding: 11px 16px; font-size: 14px; font-weight: 700;
+  font-family: 'Poppins', sans-serif;
+  letter-spacing: -0.01em;
+  /* drop-shadow rather than box-shadow, so the shadow follows the tail's
+     silhouette instead of boxing the pill only. */
+  box-shadow: none;
+  filter: drop-shadow(0 4px 8px rgba(14,14,16,0.30));
+  white-space: nowrap; text-align: center; line-height: 1.2;
+}
+/* Tail: two stacked CSS triangles - a white one, then a slightly smaller
+   orange one 3px higher. The orange covers the pill's own white bottom border
+   across the tail's mouth, so the outline reads as one continuous shape and no
+   seam shows at the join. (A single rotated square leaves a white notch there.)
+   ::before is Leaflet's own arrow slot, fully restyled. The white triangle
+   drops 13px below the pill - RES_LABEL_TAIL in the declutter code must match. */
+.leaflet-tooltip.res-label::before {
+  display: block; content: '';
+  position: absolute; left: 50%; bottom: -13px;
+  width: 0; height: 0; margin: 0 0 0 -11px;
+  background: transparent; border: 0;
+  border-left: 11px solid transparent;
+  border-right: 11px solid transparent;
+  border-top: 13px solid #fff;
+}
+.leaflet-tooltip.res-label::after {
+  content: '';
+  position: absolute; left: 50%; bottom: -11px;
+  width: 0; height: 0; margin: 0 0 0 -9px;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 13px solid #FF6B1A;
+}
+.leaflet-tooltip.res-label .res-label-dist {
+  display: block; font-size: 11.5px; font-weight: 500;
+  letter-spacing: 0; opacity: 0.9; margin-top: 3px;
+}
+.leaflet-tooltip.res-label.res-label-hidden { visibility: hidden; }
+/* Cluster marker shown where pins are too close for their labels to sit at
+   their own pins. Same pill language as the residence labels, with a tail, so
+   it reads as one of them rather than a foreign control. */
+.res-cluster {
+  position: relative;
+  display: inline-flex; align-items: baseline; gap: 6px;
+  transform: translate(-50%, calc(-100% - 24px));
+  background: #FF6B1A; color: #fff;
+  border: 2px solid #fff; border-radius: 18px;
+  padding: 9px 15px;
+  font-family: 'Poppins', sans-serif; white-space: nowrap;
+  box-shadow: none;
+  filter: drop-shadow(0 4px 8px rgba(14,14,16,0.30));
+  cursor: pointer;
+}
+.res-cluster .rc-count { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; }
+.res-cluster .rc-text  { font-size: 12px; font-weight: 500; opacity: 0.92; }
+.res-cluster::before {
+  content: ''; position: absolute; left: 50%; bottom: -13px;
+  width: 0; height: 0; margin: 0 0 0 -11px;
+  border-left: 11px solid transparent; border-right: 11px solid transparent;
+  border-top: 13px solid #fff;
+}
+.res-cluster::after {
+  content: ''; position: absolute; left: 50%; bottom: -11px;
+  width: 0; height: 0; margin: 0 0 0 -9px;
+  border-left: 9px solid transparent; border-right: 9px solid transparent;
+  border-top: 13px solid #FF6B1A;
+}
+.res-cluster:hover { filter: drop-shadow(0 6px 14px rgba(255,107,26,0.45)); }
+.leaflet-popup-content-wrapper {
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(14,14,16,0.18);
+}
+.leaflet-popup-content {
+  font-family: 'Poppins', sans-serif; margin: 14px 18px;
+  font-size: 13px; line-height: 1.5;
+}
+.leaflet-popup-content .pop-cat {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 0.14em;
+  color: var(--orange); font-weight: 600; margin-bottom: 4px;
+}
+.leaflet-popup-content .pop-title {
+  font-size: 15px; font-weight: 600; color: var(--ink); margin-bottom: 4px;
+}
+.leaflet-popup-content .pop-desc { color: var(--ink-soft); }
+.leaflet-popup-content .pop-distance {
+  margin-top: 10px; padding-top: 10px;
+  border-top: 1px dashed rgba(14,14,16,0.12);
+  font-size: 12px; color: var(--ink-soft);
+  display: flex; align-items: center; gap: 6px;
+}
+.leaflet-popup-content .pop-distance strong {
+  color: var(--orange-deep); font-weight: 700;
+}
+.leaflet-popup-content .pop-distance-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--orange-soft); color: var(--orange-deep);
+  font-size: 11px; font-weight: 700;
+}
+.leaflet-popup-content .pop-cta {
+  display: inline-flex; align-items: center; gap: 6px;
+  margin-top: 12px;
+  background: var(--orange); color: white;
+  font-size: 12px; font-weight: 600;
+  padding: 8px 14px; border-radius: 100px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+}
+.leaflet-popup-content .pop-cta:hover { background: var(--orange-deep); transform: translateX(2px); }
+
+/* Filter sidebar */
+.map-filters { display: flex; flex-direction: column; gap: 10px; }
+.filter-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 4px 6px; gap: 12px;
+}
+.filter-head .f-label {
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.2em; text-transform: uppercase;
+  color: var(--ink-soft); opacity: 0.6;
+}
+.show-all {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: 13px; color: var(--ink); font-weight: 500;
+  cursor: pointer; user-select: none;
+  background: white; border: 1px solid var(--line);
+  padding: 8px 14px; border-radius: 10px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.show-all:hover { border-color: var(--orange); box-shadow: 0 4px 12px -4px rgba(255,107,26,0.3); }
+.show-all input {
+  appearance: none; -webkit-appearance: none;
+  width: 16px; height: 16px; border-radius: 4px;
+  border: 1.5px solid var(--line); background: white;
+  cursor: pointer; position: relative;
+  transition: background 0.15s, border-color 0.15s;
+  flex: 0 0 auto;
+}
+.show-all input:checked {
+  background: var(--orange); border-color: var(--orange);
+}
+.show-all input:checked::after {
+  content: ''; position: absolute;
+  left: 4px; top: 1px; width: 4px; height: 8px;
+  border: solid white; border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+.filter-card {
+  position: relative; text-align: left;
+  background: white;
+  border: 1.5px solid var(--line);
+  border-radius: 16px; padding: 16px 18px;
+  cursor: pointer; font: inherit; color: inherit;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s, background 0.2s;
+}
+.filter-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px -16px rgba(14,14,16,0.2);
+  border-color: rgba(14,14,16,0.18);
+}
+.filter-card.active {
+  background: linear-gradient(135deg, #FFFFFF 0%, var(--orange-soft) 100%);
+  border-color: var(--orange);
+  box-shadow: 0 16px 36px -18px rgba(255,107,26,0.45);
+}
+.filter-card .fc-head {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 8px;
+}
+.filter-card .fc-icon {
+  width: 36px; height: 36px; border-radius: 10px;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 17px; flex: 0 0 auto;
+  line-height: 1;
+}
+.filter-card .fc-title {
+  font-weight: 600; font-size: 15px; color: var(--ink);
+}
+.filter-card .fc-pulse {
+  margin-left: auto;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--orange);
+  opacity: 0; transition: opacity 0.2s;
+  box-shadow: 0 0 0 0 rgba(255,107,26,0.6);
+}
+.filter-card.active .fc-pulse {
+  opacity: 1;
+  animation: fcPulse 1.8s infinite;
+}
+@keyframes fcPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(255,107,26,0.55); }
+  70%  { box-shadow: 0 0 0 10px rgba(255,107,26,0); }
+  100% { box-shadow: 0 0 0 0 rgba(255,107,26,0); }
+}
+.filter-card .fc-places {
+  font-size: 12.5px; color: var(--ink-soft);
+  line-height: 1.55; margin-bottom: 8px;
+  opacity: 0.8;
+}
+.filter-card .fc-stat {
+  font-size: 12.5px; color: var(--orange-deep); font-weight: 500;
+}
+.filter-card .fc-stat strong { font-weight: 700; }
+
+.map-footnote {
+  max-width: 1100px; margin: 22px auto 0;
+  font-size: 12.5px; color: var(--ink-soft);
+  opacity: 0.65; line-height: 1.65; text-align: center;
+  padding: 0 20px;
+}
+.map-footnote strong { color: var(--orange-deep); font-weight: 600; }
+
+@media (max-width: 1100px) {
+  .map-layout { grid-template-columns: 1fr 380px; gap: 20px; }
+  #mia-map { height: 680px; }
+}
+@media (max-width: 900px) {
+  .map-layout { grid-template-columns: 1fr; gap: 18px; }
+  #mia-map { height: 520px; }
+  .map-canvas { border-radius: 20px; }
+  .map-filters { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .filter-head {
+    grid-column: 1 / -1;
+    padding: 0 2px 2px;
+  }
+  .filter-card { padding: 14px 14px; }
+  .filter-card .fc-icon { width: 32px; height: 32px; font-size: 15px; border-radius: 8px; }
+  .filter-card .fc-title { font-size: 14px; }
+  .filter-card .fc-places, .filter-card .fc-stat { font-size: 12px; }
+  .map-overlay-top { left: 56px; right: 14px; top: 14px; }
+  .map-stat-chip { font-size: 11px; padding: 6px 12px; }
+  .map-overlay-bottom { display: none; }
+}
+@media (max-width: 560px) {
+  .map-section::before { width: 320px; height: 320px; top: -120px; right: -120px; }
+  .market-badge { font-size: 10px; padding: 8px 14px; letter-spacing: 0.15em; }
+  .map-header { margin-bottom: 24px; }
+  #mia-map { height: 440px; }
+  .map-canvas { border-radius: 18px; }
+  .map-filters { grid-template-columns: 1fr; }
+  .filter-head { flex-direction: column; align-items: flex-start; gap: 10px; }
+  .show-all { width: 100%; justify-content: flex-start; }
+  .map-pin-label { font-size: 11px; padding: 5px 10px; }
+  .map-pin.home { width: 38px; height: 38px; font-size: 15px; }
+  .map-footnote { font-size: 11.5px; }
+  .map-overlay-top { display: none; }
+}
+
+/* ---------- TESTIMONIALS ---------- */
+.testimonials { background: var(--paper); }
+.t-grid {
+  max-width: 1200px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+}
+.t-card {
+  background: white; border-radius: 24px;
+  padding: 32px; position: relative;
+  border: 1px solid var(--line);
+  transition: all 0.3s;
+}
+.t-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+.t-card .quote-mark {
+  position: absolute; top: -12px; left: 24px;
+  background: var(--orange); color: white;
+  width: 44px; height: 44px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Poppins', sans-serif; font-size: 32px;
+  line-height: 1; padding-top: 12px; font-style: italic;
+}
+.t-card .stars { color: var(--orange); margin-bottom: 14px; font-size: 14px; }
+.t-card p { font-style: italic; color: var(--ink-soft); margin-bottom: 24px; line-height: 1.6; }
+.t-card .person { display: flex; align-items: center; gap: 12px; }
+.t-card .av {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: var(--orange-soft);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Poppins', sans-serif; font-weight: 600; color: var(--orange-deep);
+}
+.t-card .pname { font-weight: 500; font-size: 14px; }
+.t-card .prole { font-size: 12px; color: var(--ink-soft); opacity: 0.7; }
+
+@media (max-width: 900px) { .t-grid { grid-template-columns: 1fr; } }
+
+/* ---------- BOOK CTA ---------- */
+.book {
+  padding: 100px 40px;
+  background: linear-gradient(135deg, var(--orange) 0%, var(--orange-deep) 100%);
+  color: white; position: relative; overflow: hidden;
+}
+.book::before {
+  content: ''; position: absolute;
+  top: -100px; right: -100px;
+  width: 400px; height: 400px; border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+}
+.book::after {
+  content: ''; position: absolute;
+  bottom: -150px; left: -150px;
+  width: 500px; height: 500px; border-radius: 50%;
+  background: rgba(255,255,255,0.06);
+}
+.book-content {
+  max-width: 900px; margin: 0 auto;
+  position: relative; z-index: 2; text-align: center;
+}
+.book h2 {
+  font-family: 'Poppins', sans-serif; font-weight: 400;
+  font-size: clamp(40px, 5.5vw, 72px); line-height: 1;
+  letter-spacing: -0.03em; margin-bottom: 24px;
+}
+.book h2 em { font-style: italic; }
+.book p {
+  font-size: 18px; line-height: 1.5;
+  max-width: 600px; margin: 0 auto 40px; opacity: 0.95;
+}
+.book-contacts {
+  display: flex; gap: 40px; justify-content: center;
+  margin-bottom: 40px; flex-wrap: wrap;
+}
+.contact-item {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 15px;
+}
+.contact-item .ci-icon {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(255,255,255,0.2);
+  display: flex; align-items: center; justify-content: center;
+}
+.contact-item a { color: white; text-decoration: none; font-weight: 500; }
+.contact-item .ci-label { display: block; font-size: 11px; opacity: 0.8; text-transform: uppercase; letter-spacing: 0.1em; }
+
+.book-qr {
+  margin-top: 36px;
+  display: flex; flex-direction: column; align-items: center; gap: 12px;
+}
+.book-qr-card {
+  background: white; padding: 14px; border-radius: 18px;
+  box-shadow: 0 14px 36px -10px rgba(14,14,16,0.25);
+  width: 160px; height: 160px;
+  display: flex; align-items: center; justify-content: center;
+}
+.book-qr-card img { width: 100%; height: 100%; object-fit: contain; display: block; }
+.book-qr-label {
+  font-size: 12px; text-transform: uppercase; letter-spacing: 0.18em;
+  color: rgba(255,255,255,0.9);
+}
+
+.book-cta-row { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.book-cta-row .cta-btn {
+  background: white; color: var(--ink); font-size: 15px; padding: 16px 32px;
+}
+.book-cta-row .cta-btn:hover { background: var(--ink); color: white; transform: translateY(-2px); }
+.book-cta-row .cta-btn.outline {
+  background: transparent; color: white; border: 1.5px solid rgba(255,255,255,0.5);
+}
+.book-cta-row .cta-btn.outline:hover { background: white; color: var(--orange-deep); border-color: white; }
+
+/* ---------- FOOTER ---------- */
+footer {
+  background: var(--ink); color: rgba(250,247,242,0.6);
+  padding: 50px 40px 30px;
+  font-size: 13px;
+}
+.foot {
+  max-width: 1200px; margin: 0 auto;
+  display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;
+}
+.foot .brand { color: var(--paper); font-size: 20px; flex-direction: row; align-items: center; gap: 14px; }
+.foot .brand .x { color: rgba(250,247,242,0.5); }
+.foot .legal { font-size: 11px; }
+
+/* ---------- UTILITY ---------- */
+.fade-in { opacity: 0; transform: translateY(30px); transition: opacity 0.8s, transform 0.8s; }
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ---------- LIGHTBOX (residences images) ---------- */
+#residences img { cursor: zoom-in; }
+/* ---------- FLOATING BOOKING BUTTON ---------- */
+.floating-book {
+  position: fixed; right: 20px; bottom: 20px; z-index: 95;
+  display: block; width: 168px; line-height: 0;
+  filter: drop-shadow(0 16px 28px rgba(14,14,16,0.32));
+  transition: transform 0.25s ease;
+}
+.floating-book img {
+  width: 100%; height: auto; display: block;
+  /* Pulse lives on the image so it does not fight the hover transform on the
+     anchor. Origin is the bottom-right corner, so it breathes inward rather
+     than pushing toward the viewport edge. */
+  transform-origin: bottom right;
+  animation: float-book-pulse 2.4s ease-in-out infinite;
+}
+/* Lift and breathe on one loop — the button hovers rather than only throbbing. */
+@keyframes float-book-pulse {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-8px) scale(1.05); }
+}
+.floating-book:hover { transform: translateY(-4px) scale(1.03); }
+.floating-book:hover img { animation-play-state: paused; }
+.floating-book:focus-visible { outline: 3px solid var(--orange); outline-offset: 6px; border-radius: 12px; }
+@media (max-width: 768px) {
+  .floating-book { width: 108px; right: 12px; bottom: 12px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .floating-book { transition: none; }
+  .floating-book:hover { transform: none; }
+  .floating-book img { animation: none; }
+}
+
+.lightbox {
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.92);
+  display: none; align-items: center; justify-content: center;
+  padding: 56px 24px 24px;
+  cursor: zoom-out;
+}
+.lightbox.open { display: flex; }
+.lightbox img {
+  max-width: 100%; max-height: 100%;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.6);
+  cursor: default;
+}
+.lightbox-close {
+  position: absolute; top: 18px; right: 22px;
+  background: rgba(255,255,255,0.12);
+  border: none; color: white;
+  width: 44px; height: 44px; border-radius: 50%;
+  font-size: 28px; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.2s;
+}
+.lightbox-close:hover { background: rgba(255,255,255,0.25); }
+</style>
+</head>
+<body>
+
+<nav class="top">
+  <div class="brand">
+    <div class="brand-logos">
+      <img class="logo-vitrox" src="mia-logo.png" alt="Malaysian Institute of Art">
+      <span class="x">×</span>
+      <img class="logo-belive" src="beLive_Logo_F_fit.png" alt="beLive">
+    </div>
+    <span class="brand-tagline">Premium Student Living Partnership</span>
+  </div>
+  <ul>
+    <li><a href="#why-belive">Why BeLive</a></li>
+    <li><a href="#map">Market Insights</a></li>
+    <li><a href="#residences">Residences</a></li>
+    <li><a href="#difference">BeLive Difference</a></li>
+    <li><a href="#how-to-book">How to Book</a></li>
+  </ul>
+  <a href="https://bit.ly/MIA_Accommodation_Partner" target="_blank" rel="noopener" class="cta-btn">Book Now <span class="arrow">→</span></a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">
+      Exclusive <span class="underline">Co-Living</span> for<br>
+      <em>MIA</em> Students
+    </h1>
+    <p class="lede">
+      Modern fully furnished rooms designed for student comfort, convenience, and community living — powered by BeLive.
+    </p>
+    <div class="hero-ctas">
+      <a href="https://bit.ly/MIA_Accommodation_Partner" target="_blank" rel="noopener" class="cta-btn orange">Book a Room Now <span class="arrow">→</span></a>
+      <a href="#residences" class="cta-btn outline">Explore Room Types</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="num">4,500+</div><div class="label">Spaces Managed</div></div>
+      <div class="stat"><div class="num">5</div><div class="label">Residences</div></div>
+      <div class="stat"><div class="num">RM500</div><div class="label">From / month</div></div>
+    </div>
+  </div>
+  <div class="hero-visual" hidden></div>
+</section>
+
+<!-- BUILT TOGETHER WITH MIA -->
+<section class="built-together" id="built-together">
+  <div class="built-together-card">
+    <div class="built-together-top">
+      <div class="built-together-logos">
+        <img class="logo-campus" src="mia-logo.png" alt="Malaysian Institute of Art">
+        <span class="bt-x">×</span>
+        <img src="beLive_Logo_F_fit.png" alt="beLive">
+      </div>
+      <div class="built-together-text">
+        <div class="kicker">Partnership</div>
+        <h2>Built Together with <em>MIA.</em></h2>
+        <p>An exclusive co-living programme co-designed by BeLive and the Malaysian Institute of Art — built around how art, design and music students actually live, study and unwind around Taman Melawati.</p>
+      </div>
+    </div>
+    <div class="built-together-photos two-up">
+      <figure><img src="BeLive_MIA_Partnership_Courtyard.jpg" alt="The BeLive and MIA teams together in the campus courtyard at Taman Melawati" loading="lazy" decoding="async"></figure>
+      <figure><img src="BeLive_MIA_Partnership_Campus.jpg" alt="The BeLive and MIA teams outside the Malaysian Institute of Art campus" loading="lazy" decoding="async"></figure>
+    </div>
+  </div>
+</section>
+
+<!-- WHY CHOOSE BELIVE -->
+<section class="why-belive" id="why-belive">
+  <div class="section-head">
+    <div class="kicker">Why Choose BeLive</div>
+    <h2>Why MIA Students <em>Choose BeLive.</em></h2>
+    <p>Built for student life — smart, comfortable and worry-free, all in one address.</p>
+  </div>
+  <div class="why-groups">
+    <div class="why-group group-smart">
+      <div class="why-group-head">
+        <span class="why-group-title"><em>Smart</em> Living</span>
+        <span class="why-group-sub">Tech that quietly takes care of you.</span>
+      </div>
+      <div class="why-group-grid">
+        <div class="why-tile">
+          <div class="tile-icon">🔐</div>
+          <h4>Smart Lock</h4>
+          <p>IoT lock on the unit and bedroom — no keys to lose.</p>
+        </div>
+        <div class="why-tile">
+          <div class="tile-icon">🚨</div>
+          <h4>Emergency Hotline in App</h4>
+          <p>One-tap access to urgent support, 24/7.</p>
+        </div>
+        <div class="why-tile">
+          <div class="tile-icon">⚡</div>
+          <h4>Electricity Tracking by Meter</h4>
+          <p>Monitor your own electricity usage and top up easily from the app.</p>
+        </div>
+        <div class="why-tile">
+          <div class="tile-icon">🌐</div>
+          <h4>Free WiFi</h4>
+          <p>High-speed internet included in every unit.</p>
+        </div>
+      </div>
+    </div>
+    <div class="why-group group-comfort">
+      <div class="why-group-head">
+        <span class="why-group-title"><em>Comfortable</em> Living</span>
+        <span class="why-group-sub">Ready-to-live spaces.</span>
+      </div>
+      <div class="why-group-grid">
+        <div class="why-tile">
+          <div class="tile-icon">🧊</div>
+          <h4>Personal Fridge</h4>
+          <p>Your own fridge in the room — snacks and drinks always close by.</p>
+        </div>
+        <div class="why-tile">
+          <div class="tile-icon">🛋️</div>
+          <h4>Fully Furnished</h4>
+          <p>Move in with your suitcase — bed, wardrobe, desk done.</p>
+        </div>
+        <div class="why-tile">
+          <div class="tile-icon">🧹</div>
+          <h4>2× Weekly Cleaning</h4>
+          <p>Common areas cleaned twice a week, every week.</p>
+        </div>
+      </div>
+    </div>
+    <div class="why-group group-worry">
+      <div class="why-group-head">
+        <span class="why-group-title"><em>Worry-Free</em> Living</span>
+        <span class="why-group-sub">Designed for students and parents.</span>
+      </div>
+      <div class="why-group-grid">
+        <div class="why-tile">
+          <div class="tile-icon">💸</div>
+          <h4>Low Deposit</h4>
+          <p>Move in easier with a much lower upfront cost.</p>
+        </div>
+        <div class="why-tile">
+          <div class="tile-icon">🛠️</div>
+          <h4>24/7 Support</h4>
+          <p>BeLive community managers, day and night.</p>
+        </div>
+        <div class="why-tile">
+          <div class="tile-icon">🚇</div>
+          <h4>Public Transport</h4>
+          <p>MRT and bus links between residence and campus.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="section-cta-row">
+    <a href="#residences" class="cta-btn orange">Explore Room Types <span class="arrow">→</span></a>
+  </div>
+</section>
+
+<!-- MAP -->
+<section class="map-section" id="map">
+  <div class="map-wrap">
+    <div class="map-header">
+      <span class="market-badge">Market Insights</span>
+      <h2 class="catchment-title">Catchment Map · <em>Kuala Lumpur</em></h2>
+      <p class="catchment-sub">Everything around the MIA campus — at a glance.</p>
+    </div>
+
+    <div class="map-layout">
+      <div class="map-canvas">
+        <div id="mia-map" role="application" aria-label="Map of the MIA campus and surrounding residences and amenities"></div>
+        <div class="map-overlay map-overlay-top">
+          <span class="map-stat-chip"><span class="chip-dot"></span><strong>5 km</strong> &amp; <strong>10 km</strong> catchment</span>
+          <span class="map-stat-chip"><span class="chip-dot"></span><strong>5</strong> residences</span>
+          <span class="map-stat-chip"><span class="chip-dot"></span><strong>450 m</strong> to Melawati Mall</span>
+        </div>
+        <div class="map-overlay map-overlay-bottom">
+          <div class="map-legend-card">
+            <h4>Map Legend</h4>
+            <div class="map-legend-row"><span class="lg-star">★</span> MIA campuses</div>
+            <div class="map-legend-row"><span class="lg-dot" style="background:#FF6B1A"></span> Active category pin</div>
+            <div class="map-legend-row"><span class="lg-ring"></span> 5 km inner catchment</div>
+            <div class="map-legend-row"><span class="lg-ring lg-ring-outer"></span> 10 km outer catchment</div>
+          </div>
+        </div>
+      </div>
+
+      <aside class="map-filters" id="map-filters">
+        <div class="filter-head">
+          <span class="f-label">Filter Map</span>
+          <label class="show-all">
+            <input type="checkbox" id="map-show-all"> Show all
+          </label>
+        </div>
+        <!-- filter cards injected by JS -->
+      </aside>
+    </div>
+
+    <p class="map-footnote">
+      Click a category card to filter the map — by default only nearby residences are shown.
+      Tick <strong>Show all</strong> to see every catchment pin at once. The ★ pins mark MIA's two campuses — Taman Melawati and the City Campus. Distances are measured from Taman Melawati.
+    </p>
+  </div>
+</section>
+
+<!-- RESIDENCES -->
+<section class="residences" id="residences">
+  <div class="section-head">
+    <div class="kicker">Your Residence</div>
+    <h2 style="color:var(--paper);">The address that <em>feels</em><br>like you.</h2>
+    <p>Purpose-built co-living for MIA students, managed end to end by BeLive.</p>
+  </div>
+
+  <div class="res-tabs" role="tablist" aria-label="Choose a residence">
+    <button class="res-tab active" type="button" data-tab="madora">M Adora</button>
+    <button class="res-tab" type="button" data-tab="mhplatinum2">MH Platinum 2</button>
+    <button class="res-tab" type="button" data-tab="rica">Rica</button>
+    <button class="res-tab" type="button" data-tab="mvertica">M Vertica</button>
+    <button class="res-tab" type="button" data-tab="unio">Unio</button>
+  </div>
+
+  <!-- Tabs run nearest-to-furthest from the MIA campus in Taman Melawati.
+       Only M Vertica has photography on file; the other four show a neutral
+       placeholder rather than borrowing another building's pictures. Drop a
+       tower shot in and swap the placeholder for an <img> to switch one on. -->
+
+  <!-- M ADORA -->
+  <div class="res-panel active" data-panel="madora">
+    <div class="res-photo">
+      <img src="BeLive_MAdora_Tower.jpg" alt="M Adora — two 31-storey towers above Wangsa Melawati, with the Kuala Lumpur skyline beyond">
+      <span class="photo-tag">M Adora &middot; Wangsa Melawati</span>
+    </div>
+    <div class="res-info">
+      <div class="res-name">M <em>Adora</em></div>
+      <div class="res-vibe">~ closest to campus, low density, walk to class ~</div>
+      <div class="res-desc">Mah Sing’s M Adora rises in two 31-storey towers over Jalan Wangsa Melawati 1, handed over ahead of schedule on a low-density 4.5-acre parcel. Thirty-five facilities crown it — an Olympic-length horizon pool, a cantilevered glass gymnasium fitted out with Technogym, and a sky bridge strung across Level 29 with the Melawati hills beyond. At 1.2 km it is the closest address to campus of the five: fifteen minutes on foot, five by car. Rooms are fully furnished and managed end to end by BeLive.</div>
+      <div class="res-stats" id="madora-stats"></div>
+      <div class="res-facilities" id="madora-facilities"></div>
+      <div class="res-facility-photos four-up">
+        <figure><img src="BeLive_MAdora_Pool.jpg" alt="M Adora horizon pool with poolside cabanas" loading="lazy" decoding="async"><figcaption>Horizon Pool</figcaption></figure>
+        <figure><img src="BeLive_MAdora_Gymnasium.jpg" alt="M Adora cantilevered glass gymnasium" loading="lazy" decoding="async"><figcaption>Sky Gymnasium</figcaption></figure>
+        <figure><img src="BeLive_MAdora_Games_Room.jpg" alt="M Adora games room with pool table and bar counter" loading="lazy" decoding="async"><figcaption>Games Room</figcaption></figure>
+        <figure><img src="BeLive_MAdora_Landscape_Deck.jpg" alt="M Adora landscaped deck and playground at sunset" loading="lazy" decoding="async"><figcaption>Landscape Deck</figcaption></figure>
+      </div>
+    </div>
+  </div>
+
+  <!-- MH PLATINUM 2 -->
+  <div class="res-panel" data-panel="mhplatinum2">
+    <div class="res-photo">
+      <img src="BeLive_MHPlatinum2_Tower.jpg" alt="Residensi MH Platinum 2 — three blocks over a retail podium at Setapak">
+      <span class="photo-tag">MH Platinum 2 &middot; Setapak</span>
+    </div>
+    <div class="res-info">
+      <div class="res-name">MH <em>Platinum 2</em></div>
+      <div class="res-vibe">~ newest keys, courtyard living, LRT-linked ~</div>
+      <div class="res-desc">The newest keys of the five. MH Group and Platinum Victory arranged three blocks and 1,254 units around a central courtyard on 4.72 acres of Jalan Usahawan 6, completed in June 2025. The facility list reads like a resort brief — swimming and spa pools, sauna, yoga deck, hammock garden, sunset deck and a jogging track threaded through the landscaping. Setapak Central, AEON Alpha Angle and Wangsa Maju LRT are minutes away; campus is 3.2 km east. Rooms are fully furnished and managed end to end by BeLive.</div>
+      <div class="res-stats" id="mhplatinum2-stats"></div>
+      <div class="res-facilities" id="mhplatinum2-facilities"></div>
+      <div class="res-facility-photos">
+        <figure><img src="BeLive_MHPlatinum2_Pool.jpg" alt="MH Platinum 2 swimming pool between the blocks" loading="lazy" decoding="async"><figcaption>Swimming Pool</figcaption></figure>
+        <figure><img src="BeLive_MHPlatinum2_Gymnasium.jpg" alt="MH Platinum 2 gymnasium" loading="lazy" decoding="async"><figcaption>Gymnasium</figcaption></figure>
+        <figure><img src="BeLive_MHPlatinum2_Playground.jpg" alt="MH Platinum 2 rooftop playground and landscaped deck" loading="lazy" decoding="async"><figcaption>Playground Deck</figcaption></figure>
+      </div>
+    </div>
+  </div>
+
+  <!-- RICA RESIDENCE -->
+  <div class="res-panel" data-panel="rica">
+    <div class="res-photo">
+      <img src="BeLive_Rica_Tower.jpg" alt="Rica Residence — 39-storey tower at Sentul, Kuala Lumpur">
+      <span class="photo-tag">Rica Residence &middot; Sentul</span>
+    </div>
+    <div class="res-info">
+      <div class="res-name">Rica <em>Residence</em></div>
+      <div class="res-vibe">~ freehold, twin sky decks, MRT at the door ~</div>
+      <div class="res-desc">Rica Residence stands alone — one freehold Fajarbaru tower of 473 units climbing 39 storeys above Jalan Perhentian in Sentul, with landscaped gardens stitched in every three floors. Its two facility decks, on Level 8 and Level 33A, carry an infinity pool set against the KL skyline, a glass sky bridge, an open-air theatre, a trampoline park and an outdoor meditation garden. Sentul Barat MRT on the Putrajaya Line sits roughly 300 m from the lobby. Rooms are fully furnished and managed end to end by BeLive.</div>
+      <div class="res-stats" id="rica-stats"></div>
+      <div class="res-facilities" id="rica-facilities"></div>
+      <div class="res-facility-photos">
+        <figure><img src="BeLive_Rica_Pool.jpg" alt="Rica Residence infinity pool on the facilities deck" loading="lazy" decoding="async"><figcaption>Infinity Pool</figcaption></figure>
+        <figure><img src="BeLive_Rica_Gymnasium.jpg" alt="Rica Residence gymnasium overlooking the Kuala Lumpur skyline" loading="lazy" decoding="async"><figcaption>Gymnasium</figcaption></figure>
+        <figure><img src="BeLive_Rica_Sky_Deck.jpg" alt="Rica Residence rooftop sky deck with trampoline park and climbing wall" loading="lazy" decoding="async"><figcaption>Sky Deck</figcaption></figure>
+      </div>
+    </div>
+  </div>
+
+  <!-- M VERTICA -->
+  <div class="res-panel" data-panel="mvertica">
+    <div class="res-photo">
+      <img src="MVertica_Condo.jpg" alt="M Vertica — residential tower at Taman Pertama, Cheras">
+      <span class="photo-tag">M Vertica &middot; Taman Pertama, Cheras</span>
+    </div>
+    <div class="res-info">
+      <div class="res-name">M <em>Vertica</em></div>
+      <div class="res-vibe">~ the largest facilities deck in Kuala Lumpur ~</div>
+      <div class="res-desc">Mah Sing’s landmark on Jalan Cheras: five towers, 3,684 units, and a 4.54-acre podium that is still the largest recreational deck in Kuala Lumpur. Thirty-eight facilities sit on it — a 50-metre pool, a 4,000 sq ft gymnasium, a 400-metre jogging and cycling loop, tennis, futsal, basketball and badminton courts, a tea garden and a maze garden. The Maluri MRT–LRT interchange is 500 m away under cover, which makes it the best-connected address of the five. Rooms are fully furnished and managed end to end by BeLive, with Master, Double and Single types available.</div>
+      <div class="res-stats" id="mvertica-stats"></div>
+      <div class="res-facilities" id="mvertica-facilities"></div>
+      <div class="res-facility-photos four-up">
+        <figure><img src="BeLive_MVertica_Pool.jpg" alt="M Vertica 50-metre swimming pool on the facilities deck" loading="lazy" decoding="async"><figcaption>50 m Pool</figcaption></figure>
+        <figure><img src="BeLive_MVertica_Gymnasium.jpg" alt="M Vertica gymnasium" loading="lazy" decoding="async"><figcaption>Gymnasium</figcaption></figure>
+        <figure><img src="BeLive_MVertica_Outdoor_Fitness.jpg" alt="M Vertica outdoor fitness deck and landscaped grounds" loading="lazy" decoding="async"><figcaption>Outdoor Fitness Deck</figcaption></figure>
+        <figure><img src="BeLive_MVertica_Playground.jpg" alt="M Vertica children&apos;s playground on the facilities deck" loading="lazy" decoding="async"><figcaption>Playground</figcaption></figure>
+      </div>
+    </div>
+  </div>
+
+  <!-- UNIO RESIDENCE -->
+  <div class="res-panel" data-panel="unio">
+    <div class="res-photo">
+      <img src="BeLive_Unio_Tower.jpg" alt="Unio Residence — 36-storey tower on Jalan Kepong beside the MRT viaduct">
+      <span class="photo-tag">Unio Residence &middot; Kepong</span>
+    </div>
+    <div class="res-info">
+      <div class="res-name">Unio <em>Residence</em></div>
+      <div class="res-vibe">~ green-certified, rooftop pool, sky-deck living ~</div>
+      <div class="res-desc">Unio Residence closes the set — two 36-storey Aikbee towers on Jalan Kepong, completed in 2021 and built to Green Building Index standards. More than fifty facilities are stacked through it, crowned by a 60-metre rooftop infinity pool, a standalone gymnasium with a 360-degree view, a sky yoga deck on Level 36 and a sky amphitheatre lounge. Kepong Baru MRT on the Putrajaya Line is about 400 m away. Room types and rates are being finalised.</div>
+      <div class="res-stats" id="unio-stats"></div>
+      <div class="res-facilities" id="unio-facilities"></div>
+      <div class="res-facility-photos four-up">
+        <figure><img src="BeLive_Unio_Pool.jpg" alt="Unio Residence rooftop infinity pool beside the glass gymnasium pod" loading="lazy" decoding="async"><figcaption>Rooftop Infinity Pool</figcaption></figure>
+        <figure><img src="BeLive_Unio_Gymnasium.jpg" alt="Unio Residence standalone gymnasium with a 360-degree view" loading="lazy" decoding="async"><figcaption>360° Gymnasium</figcaption></figure>
+        <figure><img src="BeLive_Unio_Games_Lounge.jpg" alt="Unio Residence games lounge with pool and foosball tables" loading="lazy" decoding="async"><figcaption>Games Lounge</figcaption></figure>
+        <figure><img src="BeLive_Unio_Sky_Lawn.jpg" alt="Unio Residence rooftop sky lawn with planters and city views" loading="lazy" decoding="async"><figcaption>Sky Lawn</figcaption></figure>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROOM CARDS -->
+  <div class="rooms-strip" id="rooms-strip">
+    <!-- Populated by JS -->
+  </div>
+
+  <!-- COMMON AREAS -->
+  <div class="common-strip">
+    <div class="kicker">Beyond Your Room</div>
+    <h3>Shared <em>spaces</em> — at home beyond your room</h3>
+    <p class="common-desc">Life at BeLive doesn't stop at your door. Cook and hang out in a fully equipped shared kitchen, unwind in the bright common lounge, and handle laundry in the dedicated yard — all designed for easy, sociable student living.</p>
+    <span class="common-clean">🧹 <strong>2× weekly cleaning</strong> — shared spaces kept fresh and move-in ready</span>
+    <div class="common-grid" id="common-grid"><!-- populated by JS --></div>
+  </div>
+
+  <!-- GETTING TO CAMPUS -->
+  <!-- The MIA campus is not on the rail network, so these are written as
+       distance + nearest station + typical door-to-door time rather than as
+       line-by-line MRT directions. Times are indicative and traffic-dependent.
+       The previous version carried a route infographic per residence; those
+       graphics were drawn for the old campus and have been removed rather than
+       relabelled. Add <figure class="route-figure"> back above each summary if
+       new ones are commissioned - the CSS and the lightbox still support it. -->
+  <div class="route-strip">
+    <div class="kicker">Getting Around</div>
+    <h3>Getting to the <em>Malaysian Institute of Art</em></h3>
+    <p class="common-desc">MIA sits at 294&ndash;299 Jalan Bandar 11 in Taman Melawati, just off the rail
+      network &mdash; Wangsa Maju on the Kelana Jaya Line is the nearest LRT at about 2 km. Pick a residence
+      to see how far it is from campus, which station serves it, and how long the trip usually takes.</p>
+    <div class="res-tabs" role="tablist" aria-label="Choose a residence route">
+      <button class="res-tab active" type="button" data-tab="madora">M Adora</button>
+      <button class="res-tab" type="button" data-tab="mhplatinum2">MH Platinum 2</button>
+      <button class="res-tab" type="button" data-tab="rica">Rica</button>
+      <button class="res-tab" type="button" data-tab="mvertica">M Vertica</button>
+      <button class="res-tab" type="button" data-tab="unio">Unio</button>
+    </div>
+
+    <div class="route-panel active" data-route="madora">
+      <div class="route-summary">
+        <div><div class="v">5&ndash;15 min</div><div class="l">Typical journey</div></div>
+        <div><div class="v">1.2 km</div><div class="l">To campus</div></div>
+        <div><div class="v">Walk or bus</div><div class="l">Nearest station</div></div>
+      </div>
+      <p class="route-steps">M Adora and the campus share a neighbourhood. It is a <strong>15-minute walk</strong> north-east along Jalan Wangsa Melawati into Jalan Bandar 11, or about <strong>five minutes</strong> by car or RapidKL bus. No rail, no transfers &mdash; the shortest commute of the five.</p>
+    </div>
+    <div class="route-panel" data-route="mhplatinum2">
+      <div class="route-summary">
+        <div><div class="v">10&ndash;20 min</div><div class="l">Typical journey</div></div>
+        <div><div class="v">3.2 km</div><div class="l">To campus</div></div>
+        <div><div class="v">Wangsa Maju LRT</div><div class="l">Nearest station</div></div>
+      </div>
+      <p class="route-steps">About <strong>10 minutes</strong> east by road via Jalan Genting Klang and Jalan Bandar Melawati, or a RapidKL bus toward Melawati. <strong>Wangsa Maju LRT</strong> on the Kelana Jaya Line is roughly 1.2 km from the lobby for trips into the city centre.</p>
+    </div>
+    <div class="route-panel" data-route="rica">
+      <div class="route-summary">
+        <div><div class="v">20&ndash;30 min</div><div class="l">Typical journey</div></div>
+        <div><div class="v">7.3 km</div><div class="l">To campus</div></div>
+        <div><div class="v">Sentul Barat MRT</div><div class="l">Nearest station</div></div>
+      </div>
+      <p class="route-steps"><strong>Sentul Barat</strong> on the Putrajaya Line is about 300 m from the lobby &mdash; four minutes on foot &mdash; and puts KLCC and TRX within a single ride. Campus itself is a road trip: <strong>20&ndash;30 minutes</strong> via Jalan Tun Razak and Jalan Genting Klang, as no one rail line links Sentul to Taman Melawati.</p>
+    </div>
+    <div class="route-panel" data-route="mvertica">
+      <div class="route-summary">
+        <div><div class="v">30&ndash;40 min</div><div class="l">Typical journey</div></div>
+        <div><div class="v">11.4 km</div><div class="l">To campus</div></div>
+        <div><div class="v">Maluri MRT&ndash;LRT</div><div class="l">Nearest station</div></div>
+      </div>
+      <p class="route-steps">Six minutes (550 m) under cover to the <strong>Maluri</strong> MRT&ndash;LRT interchange, which is the best connected address of the five. For campus, ride the <strong>Ampang Line</strong> to Masjid Jamek, transfer to the <strong>Kelana Jaya Line</strong> as far as Wangsa Maju, then a short bus or ride east &mdash; around 70 minutes all in. By road it is <strong>30&ndash;40 minutes</strong> direct.</p>
+    </div>
+    <div class="route-panel" data-route="unio">
+      <div class="route-summary">
+        <div><div class="v">30&ndash;40 min</div><div class="l">Typical journey</div></div>
+        <div><div class="v">12.2 km</div><div class="l">To campus</div></div>
+        <div><div class="v">Kepong Baru MRT</div><div class="l">Nearest station</div></div>
+      </div>
+      <p class="route-steps"><strong>Kepong Baru</strong> on the Putrajaya Line is about 400 m away, five minutes on foot, for city trips. Campus is a cross-town run: <strong>30&ndash;40 minutes</strong> by road via the DUKE Highway. No single rail line connects Kepong to Taman Melawati.</p>
+    </div>
+    <p class="route-note">Journey times are indicative and vary with traffic and time of day.
+      Distances are straight-line from the campus pin on the map above.</p>
+  </div>
+
+</section>
+
+<!-- BENEFITS -->
+<section class="benefits" id="benefits">
+  <div class="section-head">
+    <div class="kicker">Why Co-Living</div>
+    <h2>More than a room. <em>A community.</em></h2>
+    <p>Co-living turns university life into something shared — connections, conveniences and savings, all in one address.</p>
+  </div>
+  <div class="benefits-grid">
+    <div class="benefit">
+      <div class="num">01</div>
+      <h3>Sense of community</h3>
+      <p>Living with like-minded students fosters belonging and support. Regular social events and networking help you build lasting relationships during your study years.</p>
+    </div>
+    <div class="benefit">
+      <div class="num">02</div>
+      <h3>Shared amenities</h3>
+      <p>Pools, gyms, communal lounges and study rooms — high-quality facilities at your doorstep that you'd never get from a regular rental.</p>
+    </div>
+    <div class="benefit">
+      <div class="num">03</div>
+      <h3>Cost savings</h3>
+      <p>Co-living arrangements bundle utilities, internet and maintenance into the rent — making budgeting easier and often more affordable than traditional rentals.</p>
+    </div>
+  </div>
+  <div class="section-cta-row">
+    <a href="#residences" class="cta-btn orange">Reserve Your Spot <span class="arrow">→</span></a>
+    <a href="#map" class="cta-btn outline">See What's Around</a>
+  </div>
+</section>
+
+<!-- WHY RENT FROM BELIVE -->
+<section>
+  <div class="why">
+    <div>
+      <div class="kicker" style="color:var(--orange-deep);font-size:12px;text-transform:uppercase;letter-spacing:0.2em;font-weight:600;margin-bottom:18px;">Why Rent From BeLive</div>
+      <h2 class="display" style="font-size:clamp(36px,4.5vw,52px);margin-bottom:32px;">Experience student living, <em style="font-style:italic;color:var(--orange);">done right.</em></h2>
+      <div class="why-list">
+        <div class="why-item">
+          <div class="icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <div><h4>Expert management team</h4><p>Professional team with years of experience in student housing.</p></div>
+        </div>
+        <div class="why-item">
+          <div class="icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path></svg>
+          </div>
+          <div><h4>Comprehensive support</h4><p>On-site community managers available to assist with any issue.</p></div>
+        </div>
+        <div class="why-item">
+          <div class="icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-2 14H7L5 6"></path><path d="M10 11v6M14 11v6"></path></svg>
+          </div>
+          <div><h4>Hassle-free move-in</h4><p>Streamlined rental process for all tenants — sign and settle in.</p></div>
+        </div>
+        <div class="why-item">
+          <div class="icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          </div>
+          <div><h4>Flexible lease terms</h4><p>Tailored to fit student schedules and academic calendars.</p></div>
+        </div>
+        <div class="why-item">
+          <div class="icon-wrap">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          </div>
+          <div><h4>High-quality standards</h4><p>Commitment to clean, safe and well-maintained living spaces.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="why-visual">
+      <div class="why-stat-card">
+        <span class="badge">award-winning ✨</span>
+        <div class="label">Trusted experience</div>
+        <div class="big">4,500<em>+</em></div>
+        <div class="desc">spaces managed across Malaysia by our experienced student-housing team. Yours could be next.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AWARDS -->
+<section class="awards" hidden>
+  <div class="awards-wrap">
+    <div class="awards-copy">
+      <div class="kicker">Recognition</div>
+      <h3>Award Winning <em>Team</em></h3>
+      <div class="awards-grid">
+        <img src="Logo_MY2a.png" alt="Award logo">
+        <img src="WLOGO-02.png" alt="Award logo">
+        <img src="WLOGO-03.png" alt="Award logo">
+        <img src="WLOGO-04.png" alt="Award logo">
+        <img src="WLOGO-05.png" alt="Award logo">
+        <img src="WLOGO-06.png" alt="Award logo">
+        <img src="WLOGO-07.png" alt="Award logo">
+        <img src="WLOGO-08.png" alt="Award logo">
+        <img src="WLOGO-09.png" alt="Award logo">
+        <img src="WLOGO-10.png" alt="Award logo">
+      </div>
+    </div>
+    <div class="awards-team-photo">
+      <img src="BeLiveXMas2025.jpg" alt="BeLive team — Christmas 2025">
+    </div>
+  </div>
+</section>
+
+<!-- AMENITIES -->
+<!-- SMART LOCK + CCTV SPOTLIGHT -->
+<section class="lock-spotlight" id="difference">
+  <div class="lock-wrap">
+    <div class="lock-photos">
+      <div class="lock-photo">
+        <img src="main_room_door_lock_cctv.png" alt="IoT smart lock on the main door and bedroom door, plus CCTV in the common area">
+        <span class="lock-tag">Main Door · Bedroom · CCTV</span>
+      </div>
+    </div>
+    <div class="lock-copy">
+      <div class="kicker">The BeLive Difference</div>
+      <h2>Smart Living,<br><em>Protected by BeLive.</em></h2>
+      <p>More than just a room — every BeLive space is designed with smart security, privacy, and peace of mind in mind. From the moment you step into the building until you enter your own room, BeLive's IoT-powered security system helps you feel safer, more comfortable, and more in control.</p>
+      <ul class="lock-points">
+        <li><strong>Dual Smart Lock Protection</strong> — Every unit comes with 2 IoT smart locks: one at the main entrance and one for your own bedroom, giving you an extra layer of personal privacy and security.</li>
+        <li><strong>Private Access Control</strong> — Unique PIN access, temporary guest codes, and app-controlled entry let you manage access easily without worrying about lost keys or access cards.</li>
+        <li><strong>24/7 CCTV Monitoring</strong> — CCTV coverage at the shared living area helps create a safer and more secure co-living environment for all tenants.</li>
+        <li><strong>Smart App Integration</strong> — Lock, unlock, and track entry activity directly from your phone, anytime, anywhere.</li>
+        <li><strong>Auto-Lock Technology</strong> — Doors automatically secure themselves, with battery alerts sent early to ensure uninterrupted protection.</li>
+      </ul>
+      <p class="lock-outro">Smart technology isn't just about convenience — it's about creating a <strong>safer, worry-free co-living experience</strong> where tenants can truly feel at home.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SMART UTILITIES SPOTLIGHT -->
+<section class="utility-spotlight">
+  <div class="utility-wrap">
+    <div class="utility-copy">
+      <div class="kicker">The BeLive Difference</div>
+      <h2>Smart Utilities,<br><em>Powered by BeLive.</em></h2>
+      <p>More than just electricity — every BeLive space is designed with smarter utility management to create a more transparent, efficient, and worry-free student living experience. With BeLive's smart meter system, tenants can easily monitor usage, manage electricity top-ups, and enjoy better control over their monthly living expenses.</p>
+      <ul class="utility-points">
+        <li><strong>Smart TopUp Meter System</strong> — Easily monitor and manage your own electricity usage directly from the BeLive ecosystem.</li>
+        <li><strong>Transparent Utility Tracking</strong> — Clear usage visibility helps avoid unexpected electricity charges and encourages smarter energy consumption.</li>
+        <li><strong>Aircond-Friendly Living</strong> — Enjoy comfortable daily living with better control over your room's energy usage.</li>
+        <li><strong>Convenient Digital Management</strong> — Top up and monitor utilities more conveniently without complicated manual processes.</li>
+        <li><strong>Optimised Shared Living Experience</strong> — Designed to create fairer and more efficient utility management for every tenant.</li>
+      </ul>
+      <p class="utility-outro">Smarter utilities create a <strong>more comfortable, transparent, and stress-free co-living experience.</strong></p>
+    </div>
+    <div class="utility-photo">
+      <img src="Top_Up_Meter_1.png" alt="BeLive smart meter and TopUp app on a mobile device">
+      <span class="utility-chip">Smart Meter · Utility Control · TopUp System</span>
+    </div>
+  </div>
+</section>
+
+<!-- EMERGENCY SUPPORT SPOTLIGHT -->
+<section class="emergency-spotlight">
+  <div class="emergency-wrap">
+    <div class="emergency-photo">
+      <img src="Emergency_Hotline.png" alt="BeLive in-app emergency hotline screen">
+      <span class="emergency-chip">Emergency Hotline · 24/7 Support · Fast Response</span>
+    </div>
+    <div class="emergency-copy">
+      <div class="kicker">The BeLive Difference</div>
+      <h2>Emergency Support,<br><em>Always Within Reach.</em></h2>
+      <p>At BeLive, your safety and peace of mind come first. Whether it's a lock issue, maintenance emergency, power disruption, or urgent assistance, help is always just a tap away through the BeLive App Emergency Hotline system.</p>
+      <ul class="emergency-points">
+        <li><strong>24/7 Emergency Hotline Access</strong> — Reach our support team anytime for urgent living-related assistance.</li>
+        <li><strong>Fast Response Support</strong> — Immediate escalation for emergencies to ensure quicker resolution and better tenant safety.</li>
+        <li><strong>In-App Emergency Button</strong> — Easily access support directly through the BeLive app without complicated processes.</li>
+        <li><strong>Maintenance &amp; Safety Assistance</strong> — Get help for urgent maintenance, access issues, or unexpected situations.</li>
+        <li><strong>Peace of Mind for Students &amp; Parents</strong> — Designed to create a safer and more reliable student co-living experience.</li>
+      </ul>
+      <p class="emergency-outro">Smart support creates a <strong>safer, more comfortable, and worry-free co-living environment.</strong></p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW TO BOOK -->
+<section class="how-to-book" id="how-to-book">
+  <div class="section-head">
+    <div class="kicker">How to Book</div>
+    <h2>Reserve your room in <em>four steps.</em></h2>
+    <p>Straightforward from enquiry to move-in day — with BeLive supporting you at every step.</p>
+  </div>
+  <div class="how-steps">
+    <div class="how-step">
+      <div class="how-step-top"><div class="step-num">1</div><span class="step-emoji">💬</span></div>
+      <h4>Enquire</h4>
+      <p>Tell us your preferred residence, room type and move-in month via the enquiry form.</p>
+    </div>
+    <div class="how-step">
+      <div class="how-step-top"><div class="step-num">2</div><span class="step-emoji">🔑</span></div>
+      <h4>Schedule a Viewing</h4>
+      <p>We'll arrange a physical or virtual tour with a BeLive community manager.</p>
+    </div>
+    <div class="how-step">
+      <div class="how-step-top"><div class="step-num">3</div><span class="step-emoji">✍️</span></div>
+      <h4>Reserve &amp; Sign</h4>
+      <p>Place a booking, e-sign the tenancy and pay the first month's rent and a low refundable deposit.</p>
+    </div>
+    <div class="how-step">
+      <div class="how-step-top"><div class="step-num">4</div><span class="step-emoji">🎉</span></div>
+      <h4>Move In</h4>
+      <p>Collect your IoT smart-lock PIN on day one and step into your fully furnished BeLive room.</p>
+    </div>
+  </div>
+  <div class="section-cta-row">
+    <a href="https://bit.ly/MIA_Accommodation_Partner" target="_blank" rel="noopener" class="cta-btn orange">Enquire Now <span class="arrow">→</span></a>
+  </div>
+</section>
+
+<!-- REFERENCE CALCULATION OF PAYMENT -->
+<section class="payment-ref" id="payment-ref">
+  <div class="section-head">
+    <div class="kicker">Reference Calculation of Payment</div>
+    <h2>What you actually <em>pay</em>.</h2>
+    <p>Pick your student type, residence and room type for an estimated first-payment breakdown — based on a 12-month tenancy, all SST-inclusive.</p>
+  </div>
+  <div class="calc-wrap">
+    <div class="calc-controls">
+      <label class="calc-field">
+        <span>Student Type</span>
+        <select id="calc-student">
+          <option value="local">Local student</option>
+          <option value="international">International student</option>
+        </select>
+      </label>
+      <label class="calc-field">
+        <span>Residence</span>
+        <select id="calc-condo">
+          <option value="madora">M Adora</option>
+          <option value="mhplatinum2">MH Platinum 2</option>
+          <option value="rica">Rica Residence</option>
+          <option value="mvertica">M Vertica</option>
+        </select>
+      </label>
+      <label class="calc-field">
+        <span>Room Type</span>
+        <select id="calc-room"></select>
+      </label>
+      <label class="calc-field">
+        <span>Car Park</span>
+        <select id="calc-carpark">
+          <option value="no">Not required</option>
+          <option value="yes">Add reserved bay (+RM100/mo)</option>
+        </select>
+      </label>
+    </div>
+    <div class="payment-card" id="calc-breakdown"><!-- injected by JS --></div>
+    <p class="payment-disclaimer">
+      <strong>Note:</strong> Prices are inclusive of 8% SST. Any adjustments or changes will be determined based on the monthly rental amount and the agreed rental terms.<br><br>
+      <strong>Terms &amp; Conditions:</strong> Prices shown are for reference only. Figures are based on a <strong>12-month tenancy</strong>; tenancies of less than 12 months carry a different rental rate. Final figures will be confirmed by the BeLive team before signing.<br><br>
+      <strong>Student Type:</strong> Local students receive an RM120 discount on the rental charges and have the security deposit waived. Select your student type above for the applicable breakdown.
+    </p>
+  </div>
+  <div class="section-cta-row">
+    <a href="https://bit.ly/MIA_Accommodation_Partner" target="_blank" rel="noopener" class="cta-btn orange">Check Availability <span class="arrow">→</span></a>
+  </div>
+</section>
+
+<!-- FINAL CTA — RENT SAFE, STAY HAPPY -->
+<section class="final-cta" id="final-cta">
+  <div class="final-cta-wrap">
+    <h2>Rent Safe, <em>Stay Happy.</em></h2>
+    <p>Smart student co-living designed for comfort, convenience, and peace of mind.</p>
+    <div class="final-cta-buttons">
+      <a href="https://bit.ly/MIA_Accommodation_Partner" target="_blank" rel="noopener" class="fcta-btn primary">Book a Room Now <span class="arrow">→</span></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="foot">
+    <div class="brand">
+      <img class="logo-vitrox" src="mia-logo-w.png" alt="Malaysian Institute of Art">
+      <span class="x">×</span>
+      <img class="logo-belive" src="beLive_Logo_F_fit_w.png" alt="beLive">
+    </div>
+    <div class="legal">© 2026 BeLive. T&C apply. Prices subject to administration and monthly rent charges.</div>
+  </div>
+</footer>
+
+<!-- FLOATING BOOKING BUTTON -->
+<a class="floating-book" href="https://bit.ly/MIA_Accommodation_Partner" target="_blank" rel="noopener" aria-label="Book a room now — opens the booking form in a new tab">
+  <img src="Booking_Button.png" alt="Book Now — your new home awaits">
+</a>
+
+<div class="lightbox" id="lightbox" role="dialog" aria-label="Image preview" aria-modal="true">
+  <button class="lightbox-close" type="button" aria-label="Close">&times;</button>
+  <img alt="">
+</div>
+
+<script>
+// --- Tab switching for residences ---
+const tabs = document.querySelectorAll('.res-tab');
+const panels = document.querySelectorAll('.res-panel');
+const routePanels = document.querySelectorAll('.route-panel');
+const roomsStrip = document.getElementById('rooms-strip');
+
+// Room rates as supplied by BeLive (Pricing for each condo unit room).
+// Room types are Studio / Master / Double / Single; Studio is offered at M Adora
+// and MH Platinum 2 only. Unio has no published rates yet and stays coming-soon,
+// which also keeps it out of the payment calculator.
+// Photography: M Vertica is shot. The other four render a neutral placeholder
+// rather than borrowing another building's pictures - add `img:` per room to
+// switch one on. Unit counts, storeys and facility lists are researched per
+// building from the developers' own material and published reviews.
+const roomData = {
+  madora: {
+    label: 'M Adora',
+    rooms: [
+      { name: 'Studio',      now: 'RM1,300', img: 'BeLive_MAdora_Studio.jpg' },
+      { name: 'Master Room', now: 'RM1,100', img: 'BeLive_MAdora_Master_Bedroom.jpg' },
+      { name: 'Double Room', now: 'RM850',   img: 'BeLive_MAdora_Double_Bedroom.jpg' },
+      { name: 'Single Room', now: 'RM700',   img: 'BeLive_MAdora_Single_Bedroom.jpg' },
+    ],
+    specs: [
+      { v: '31', l: 'Storeys' },
+      { v: '677', l: 'Units' },
+      { v: '35', l: 'Facilities' },
+    ],
+    facilities: ['Olympic-Length Horizon Pool','Cantilevered Glass Gymnasium','Sky Bridge (Level 29)',
+      'Sky Deck','Island Jacuzzi','Badminton Court','Games Room','Computer & Study Room',
+      'Multipurpose Hall','Nursery',"Children's Playground",'Herb Garden','Reflexology Path',
+      'Sunken Lounge','BBQ Trellis','Open Lawn','Family Pavilion'],
+    photographed: ['Olympic-Length Horizon Pool','Cantilevered Glass Gymnasium','Games Room'],
+    common: [
+      { img: 'BeLive_MAdora_Kitchen.jpg',  label: 'Kitchen',  alt: 'M Adora shared kitchen with induction hob and water dispenser' },
+      { img: 'BeLive_MAdora_Bathroom.jpg', label: 'Bathroom', alt: 'M Adora shared bathroom with rain shower and vanity' },
+    ],
+  },
+  mhplatinum2: {
+    label: 'MH Platinum 2',
+    rooms: [
+      { name: 'Studio',      now: 'RM1,300', img: 'BeLive_MHPlatinum2_Studio.jpg' },
+      { name: 'Master Room', now: 'RM1,100', img: 'BeLive_MHPlatinum2_Master_Bedroom.jpg' },
+      { name: 'Double Room', now: 'RM800',   img: 'BeLive_MHPlatinum2_Double_Bedroom.jpg' },
+      { name: 'Single Room', now: 'RM700',   img: 'BeLive_MHPlatinum2_Single_Bedroom.jpg' },
+    ],
+    specs: [
+      { v: '3', l: 'Blocks' },
+      { v: '1,254', l: 'Units' },
+      { v: '4.72', l: 'Acre Site' },
+    ],
+    facilities: ['Swimming Pool',"Children's Pool",'Spa Pool','Sauna','Gymnasium','Yoga Deck',
+      'Outdoor Fitness Area','Jogging Track','Reflexology Path','Central Courtyard','Hammock Garden',
+      'Sunset Deck','Lounge Decks','Entertainment Hall','Multipurpose Hall','BBQ Area','Cafeteria',
+      'Launderette',"Children's Playground",'24-Hour Security'],
+    photographed: ['Swimming Pool','Gymnasium',"Children's Playground"],
+    common: [
+      { img: 'BeLive_MHPlatinum2_Common_Area.jpg', label: 'Common Area', alt: 'MH Platinum 2 shared living and dining area' },
+      { img: 'BeLive_MHPlatinum2_Yard.jpg',        label: 'Yard',        alt: 'MH Platinum 2 yard with washing machine' },
+    ],
+  },
+  rica: {
+    label: 'Rica Residence',
+    rooms: [
+      { name: 'Master Room', now: 'RM1,100', img: 'BeLive_Rica_Master_Bedroom.jpg' },
+      { name: 'Double Room', now: 'RM800',   img: 'BeLive_Rica_Double_Bedroom.jpg' },
+      { name: 'Single Room', now: 'RM700',   img: 'BeLive_Rica_Single_Bedroom.jpg' },
+    ],
+    specs: [
+      { v: '39', l: 'Storeys' },
+      { v: '473', l: 'Units' },
+      { v: '2', l: 'Sky Decks' },
+    ],
+    facilities: ['Infinity Pool','Wading Pool','Glass Sky Bridge','Open-Air Theatre','Trampoline Park',
+      'Outdoor Meditation Garden','Outdoor Swinging Beds','Gymnasium','Sauna','Tennis Court',
+      'Squash Court','Jogging Track','BBQ Terrace','Function Room','Cafe','Minimart',
+      "Children's Playground",'Sky Garden Every 3 Floors','24-Hour Security'],
+    // These three have captioned tiles below, so they are not repeated as chips.
+    photographed: ['Infinity Pool','Gymnasium','Trampoline Park'],
+    // Two shared-space shots supplied; the grid drops to two columns for them.
+    common: [
+      { img: 'BeLive_Rica_Common_Area.jpg', label: 'Common Area', alt: 'Rica Residence shared dining area and open kitchen' },
+      { img: 'BeLive_Rica_Yard.jpg',        label: 'Yard',        alt: 'Rica Residence yard with washer and dryer' },
+    ],
+  },
+  mvertica: {
+    label: 'M Vertica',
+    rooms: [
+      { name: 'Master Room', now: 'RM1,100', img: 'BeLive_MVertica_Master_Bedroom.jpg' },
+      { name: 'Double Room', now: 'RM800',   img: 'BeLive_MVertica_Double_Bedroom.jpg' },
+      { name: 'Single Room', now: 'RM700',   img: 'BeLive_MVertica_Single_Bedroom.jpg' },
+    ],
+    specs: [
+      { v: '5', l: 'Towers' },
+      { v: '3,684', l: 'Units' },
+      { v: '38', l: 'Facilities' },
+    ],
+    facilities: ['50 m Swimming Pool','Leisure & Wading Pool','Jacuzzi','4,000 sq ft Gymnasium',
+      '400 m Jogging & Cycling Track','Outdoor Fitness Deck','Tennis Court','Futsal Court','Half Basketball Court',
+      'Badminton Court','Yoga Deck','Viewing Deck','Tea Garden','Maze Garden','BBQ Pit',
+      'Clubhouse','Business Centre','Sheltered Playground'],
+    // Each of these has a captioned photo tile below, so it is not repeated as a
+    // chip. "Badminton Court" is the tile captioned "Badminton Hall".
+    photographed: ['50 m Swimming Pool','4,000 sq ft Gymnasium','Outdoor Fitness Deck','Sheltered Playground'],
+    // All three shots are native 4:3, so none needs a crop position.
+    common: [
+      { img: 'BeLive_MVertica_Common_Area.jpg', label: 'Common Area', alt: 'M Vertica shared dining area and open kitchen' },
+      { img: 'BeLive_MVertica_Kitchen.png',     label: 'Kitchen',     alt: 'M Vertica shared kitchen' },
+      { img: 'BeLive_MVertica_Yard.png',        label: 'Yard',        alt: 'M Vertica yard and laundry area' },
+    ],
+  },
+  unio: {
+    label: 'Unio Residence',
+    comingSoon: true,
+    rooms: [],
+    specs: [
+      { v: '36', l: 'Storeys' },
+      { v: '520', l: 'Units' },
+      { v: '50+', l: 'Facilities' },
+    ],
+    facilities: ['60 m Rooftop Infinity Pool','360° Standalone Gymnasium','Sky Yoga Deck (Level 36)',
+      'Sky Amphitheatre Lounge','Outdoor Fitness Gym','Badminton Court','Basketball Court',
+      'BBQ & Teppanyaki Corner','Business Lounge','Games Lounge','Sky Lawn',
+      "Children's Playground",'GBI-Certified','24-Hour Security'],
+    photographed: ['60 m Rooftop Infinity Pool','360° Standalone Gymnasium','Games Lounge','Sky Lawn'],
+    // No common-area photos supplied, so Shared Spaces stays hidden for Unio.
+  },
+};
+const specsHtml = d => (d.specs || []).map(x =>
+  `<div class="res-stat"><div class="v">${x.v}</div><div class="l">${x.l}</div></div>`).join('');
+const facilitiesHtml = d => (d.facilities || [])
+  .filter(f => !(d.photographed || []).includes(f))
+  .map(f => `<span>${f}</span>`).join('');
+
+function renderRooms(key) {
+  const d = roomData[key];
+  const commonStrip = document.querySelector('.common-strip');
+  const commonGridEl = document.getElementById('common-grid');
+  const hasPanel = !!document.querySelector(`.res-panel[data-panel="${key}"]:not([hidden])`);
+  const stripInfo = hasPanel ? '' : `
+    ${d.specs ? `<div class="res-stats strip-stats">${specsHtml(d)}</div>` : ''}
+    ${d.facilities ? `<div class="res-facilities strip-facilities">${facilitiesHtml(d)}</div>` : ''}`;
+
+  if (d.comingSoon) {
+    roomsStrip.innerHTML = `
+      <h3>${d.label} <em>rooms</em> — coming soon</h3>
+      <p class="rooms-desc">Room types and rates for ${d.label} are being finalised. Pick another residence above, or enquire and we will send them as soon as they are confirmed.</p>
+      ${stripInfo}
+      <div class="section-cta-row">
+        <a href="https://bit.ly/MIA_Accommodation_Partner" target="_blank" rel="noopener" class="cta-btn orange">Enquire Now <span class="arrow">→</span></a>
+      </div>`;
+    if (commonStrip) commonStrip.hidden = true;
+    return;
+  }
+
+  const cardsHtml = d.rooms.map(r => `
+    <div class="room-card">
+      <div class="room-img">${r.img
+        ? `<img src="${r.img}" alt="${r.name}" loading="lazy" decoding="async"${r.pos ? ` style="object-position:${r.pos}"` : ''}>`
+        : `<div class="room-img-empty" role="img" aria-label="Photo of the ${r.name} coming soon"><span aria-hidden="true">🛏</span><small>Photo coming soon</small></div>`}</div>
+      <div class="room-body">
+        <div class="rt">${r.name}</div>
+        ${r.size ? `<div class="rsize">${r.size}</div>` : ''}
+        <div class="rprice">
+          ${r.old ? `<span class="old">${r.old}</span>` : ''}
+          <span class="now">${r.now}</span>
+          <span class="per">/ month</span>
+        </div>
+        ${r.old ? '<span class="promo">Limited Time</span>' : ''}
+        <a href="https://bit.ly/MIA_Accommodation_Partner" target="_blank" rel="noopener" class="room-cta">Book This Room <span class="arrow">→</span></a>
+      </div>
+    </div>
+  `).join('');
+  roomsStrip.innerHTML = `
+    <h3>${d.label} <em>rooms</em> — modern & furnished</h3>
+    <p class="rooms-desc">Move in with just your suitcase. Every BeLive room comes fully furnished and tech-ready — thoughtfully fitted out for comfortable study, rest and everyday living, with no extra setup or hidden furnishing costs.</p>
+    ${stripInfo}
+    <div class="rooms-included">
+      <span class="ri-intro">Every room includes:</span>
+      <span>🧊 Personal Fridge</span>
+      <span>🛏️ Bedframe</span>
+      <span>😴 Mattress</span>
+      <span>🚪 Wardrobe</span>
+      <span>🪑 Desk</span>
+      <span>❄️ Aircond</span>
+      <span>🌀 Fan</span>
+      <span>💡 Light</span>
+      <span>⚡ Smart Meter</span>
+      <span>🔐 Smart Room Door Lock</span>
+    </div>
+    <div class="rooms-carousel">
+      <button class="carousel-arrow prev" aria-label="Previous rooms">‹</button>
+      <div class="rooms-viewport"><div class="rooms-track">${cardsHtml}</div></div>
+      <button class="carousel-arrow next" aria-label="Next rooms">›</button>
+    </div>
+  `;
+  initRoomsCarousel(d.rooms.length);
+
+  // Hide the shared-spaces block unless this residence has its own photos, so
+  // one property's common areas are never shown under another's name.
+  if (commonStrip) commonStrip.hidden = !d.common;
+  if (commonGridEl) {
+    commonGridEl.classList.toggle('two-up', (d.common || []).length === 2);
+    commonGridEl.innerHTML = (d.common || []).map(c => `
+      <div class="common-card">
+        <div class="common-img"><img src="${c.img}" alt="${c.alt}" loading="lazy" decoding="async"${c.pos ? ` style="object-position:${c.pos}"` : ''}></div>
+        <div class="common-label">${c.label}</div>
+      </div>
+    `).join('');
+  }
+}
+
+let roomsCarouselResizeHandler = null;
+function initRoomsCarousel(total) {
+  const root = roomsStrip.querySelector('.rooms-carousel');
+  if (!root) return;
+  const track = root.querySelector('.rooms-track');
+  const prev = root.querySelector('.carousel-arrow.prev');
+  const next = root.querySelector('.carousel-arrow.next');
+  let index = 0;
+
+  const visibleCount = () => {
+    if (window.innerWidth <= 540) return 1;
+    if (window.innerWidth <= 900) return 2;
+    return 3;
+  };
+
+  const update = () => {
+    const v = visibleCount();
+    const maxIndex = Math.max(0, total - v);
+    if (index > maxIndex) index = maxIndex;
+    const card = track.querySelector('.room-card');
+    const cardWidth = card ? card.getBoundingClientRect().width : 0;
+    const gap = 20;
+    track.style.transform = `translateX(-${index * (cardWidth + gap)}px)`;
+    prev.disabled = index <= 0;
+    next.disabled = index >= maxIndex;
+  };
+
+  prev.addEventListener('click', () => { index = Math.max(0, index - 1); update(); });
+  next.addEventListener('click', () => { index = index + 1; update(); });
+
+  if (roomsCarouselResizeHandler) window.removeEventListener('resize', roomsCarouselResizeHandler);
+  roomsCarouselResizeHandler = update;
+  window.addEventListener('resize', roomsCarouselResizeHandler);
+
+  requestAnimationFrame(update);
+}
+
+function activateResidence(key) {
+  tabs.forEach(x => x.classList.toggle('active', x.dataset.tab === key));
+  panels.forEach(p => p.classList.toggle('active', p.dataset.panel === key));
+  routePanels.forEach(r => r.classList.toggle('active', r.dataset.route === key));
+  renderRooms(key);
+}
+tabs.forEach(t => {
+  t.addEventListener('click', () => activateResidence(t.dataset.tab));
+});
+
+// Map popup "View details" buttons → switch tab and scroll to residences
+document.addEventListener('click', e => {
+  const cta = e.target.closest('.pop-cta[data-restab]');
+  if (!cta) return;
+  e.preventDefault();
+  activateResidence(cta.dataset.restab);
+  const target = document.getElementById('residences');
+  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
+
+// Initial render
+// Every residence that has a detail panel gets its stats and chips filled from
+// the same data the rooms strip uses, so adding a panel needs no new wiring.
+Object.keys(roomData).forEach(key => {
+  const panel = document.querySelector(`.res-panel[data-panel="${key}"]`);
+  if (!panel) return;
+  const st = panel.querySelector('.res-stats');
+  const fc = panel.querySelector('.res-facilities');
+  if (st) st.innerHTML = specsHtml(roomData[key]);
+  if (fc) fc.innerHTML = facilitiesHtml(roomData[key]);
+});
+
+activateResidence('madora');
+
+// --- Payment calculator ---
+(function initPaymentCalculator() {
+  const studentSel = document.getElementById('calc-student');
+  const condoSel = document.getElementById('calc-condo');
+  const roomSel = document.getElementById('calc-room');
+  const carparkSel = document.getElementById('calc-carpark');
+  const breakdown = document.getElementById('calc-breakdown');
+  if (!studentSel || !condoSel || !roomSel || !carparkSel || !breakdown) return;
+
+  // Unio is omitted on purpose: it has no published rates yet, so there is
+  // nothing for the calculator to work from.
+  const condoLabels = {
+    madora: 'M Adora', mhplatinum2: 'MH Platinum 2',
+    rica: 'Rica Residence', mvertica: 'M Vertica',
+  };
+  // Matches the tenant-type calculation on the BeLive x INCEIF site: a local
+  // tenant gets RM120 off the rental charges and the security deposit waived.
+  // INCEIF's own RM150 processing fee is deliberately NOT carried over - it is
+  // that institution's charge, not a BeLive one.
+  const FEES = {
+    adminMoveIn: 529,    // one-time admin & move-in fee (SST-inclusive)
+    carPark: 100,
+    accessCard: 150,
+    rentalAddOn: 200,    // added to the room's monthly rate, both student types
+    localDiscount: 120,  // deducted from rental charges for local students
+    depositMultiple: 2,  // security deposit = room rental x 2 (not shown to users)
+  };
+  const STUDENT = {
+    local:         { label: 'Local student',         local: true  },
+    international: { label: 'International student', local: false },
+  };
+  const fmt = (n) => 'RM ' + n.toLocaleString('en-MY', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const rentOf = (room) => parseFloat(String(room.now).replace(/[^0-9.]/g, '')) || 0;
+
+  function populateRooms() {
+    const rooms = roomData[condoSel.value].rooms;
+    roomSel.innerHTML = rooms.map((r, i) => `<option value="${i}">${r.name} — ${r.now}/mo</option>`).join('');
+  }
+
+  function render() {
+    const who = STUDENT[studentSel.value] || STUDENT.local;
+    const isLocal = who.local;
+    const rooms = roomData[condoSel.value].rooms;
+    const room = rooms[roomSel.value] || rooms[0];
+    const baseRent = rentOf(room);
+    const rent = baseRent + FEES.rentalAddOn;
+    const discount = isLocal ? FEES.localDiscount : 0;
+    const wantsCarpark = carparkSel.value === 'yes';
+    const carpark = wantsCarpark ? FEES.carPark : 0;
+    // Deposit follows the room rental, and is waived for local students.
+    const depositBeforeWaiver = baseRent * FEES.depositMultiple;
+    const securityDeposit = isLocal ? 0 : depositBeforeWaiver;
+    const total = FEES.adminMoveIn + rent - discount + carpark + securityDeposit + FEES.accessCard;
+    const rentNote = `${condoLabels[condoSel.value]} — ${room.name}`;
+    const totalNote = `12-month tenancy · ${who.label} · incl. 8% SST`;
+
+    breakdown.innerHTML = `
+      <div class="payment-row group-head"><span class="pr-label">One-Time &amp; Monthly Fees</span></div>
+      <div class="payment-row"><div><span class="pr-label">Admin &amp; Move-In Fee</span><span class="pr-note">One-time, incl. 8% SST</span></div><span class="pr-value">${fmt(FEES.adminMoveIn)}</span></div>
+      <div class="payment-row"><div><span class="pr-label">Rental Charges</span><span class="pr-note">${rentNote}</span></div><span class="pr-value">${fmt(rent)}</span></div>
+      ${isLocal ? `<div class="payment-row"><div><span class="pr-label">Discount</span><span class="pr-note">${who.label} rate</span></div><span class="pr-value discount">− ${fmt(discount)}</span></div>` : ''}
+      <div class="payment-row"><div><span class="pr-label">Car Park (Monthly)</span><span class="pr-note">${wantsCarpark ? 'Reserved bay added' : 'Not included'}</span></div><span class="pr-value${wantsCarpark ? '' : ' muted'}">${wantsCarpark ? fmt(FEES.carPark) : '—'}</span></div>
+      <div class="payment-row group-head"><span class="pr-label">Refundable</span></div>
+      <div class="payment-row"><div><span class="pr-label">Security Deposit</span><span class="pr-note">${isLocal ? 'Waived for local students' : 'Based on room rental · refundable, incl. 8% SST'}</span></div><span class="pr-value${isLocal ? ' discount' : ''}">${isLocal ? `<span class="pr-was">${fmt(depositBeforeWaiver)}</span>${fmt(0)}` : fmt(securityDeposit)}</span></div>
+      <div class="payment-row"><div><span class="pr-label">Access Card Deposit</span><span class="pr-note">Refundable</span></div><span class="pr-value">${fmt(FEES.accessCard)}</span></div>
+      <div class="payment-row note"><span class="pr-foot">Refundable upon successful move-out inspection and subject to the tenancy agreement &amp; applicable T&amp;Cs.</span></div>
+      <div class="payment-row total"><div><span class="pr-label">Total First Payment</span><span class="pr-note">${totalNote}</span></div><span class="pr-value">${fmt(total)}</span></div>
+    `;
+  }
+
+  studentSel.addEventListener('change', render);
+  condoSel.addEventListener('change', () => { populateRooms(); render(); });
+  roomSel.addEventListener('change', render);
+  carparkSel.addEventListener('change', render);
+  populateRooms();
+  render();
+})();
+
+// --- Smooth scroll for nav ---
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const target = document.querySelector(a.getAttribute('href'));
+    if (target) { e.preventDefault(); target.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  });
+});
+
+// --- Catchment map (Leaflet) ---
+window.addEventListener('load', () => {
+  if (typeof L === 'undefined') return;
+
+  // MIA — Malaysian Institute of Art, 294-299 Jalan Bandar 11, Taman Melawati,
+  // 53100 Kuala Lumpur. This sets the map centre, both catchment rings and
+  // every computed distance.
+  // TODO VERIFY: locality-level, anchored on the Jalan Bandar 11 shop rows in
+  // Taman Melawati rather than geocoded. Confirm against Google Maps.
+  const MIA = [3.213500, 101.748700];
+
+  // MIA's second campus, in the city centre. Decoded from plus code 5P42+7P
+  // (full 6PM35P42+7P), which puts it 1.1 km from KLCC and 8.3 km from Taman
+  // Melawati. The rings, the catchment and every "from MIA" distance stay
+  // anchored to the main campus above, because that is what the residences
+  // and the route guides are measured against.
+  const MIA_CITY = [3.155688, 101.701813];
+
+  const CATEGORIES = {
+    residence: {
+      label: 'Residences', icon: '🏠', color: '#FF6B1A',
+      places: 'MIA Taman Melawati (★) · MIA City Campus (★) · M Adora · MH Platinum 2 · Rica Residence · M Vertica · Unio Residence',
+      stat: '<strong>5 BeLive</strong> co-living residences',
+      defaultOn: true,
+    },
+    education: {
+      label: 'Education', icon: '🎓', color: '#0F766E',
+      places: 'TAR UMT Setapak · IIUM Gombak · UCSI Springhill · Universiti Kuala Lumpur',
+      stat: '<strong>4 campuses</strong> in the catchment',
+      hidden: true,
+    },
+    healthcare: {
+      label: 'Healthcare', icon: '⚕️', color: '#DC2626',
+      places: 'Columbia Asia Setapak · KPJ Ampang Puteri · Hospital Kuala Lumpur',
+      stat: '<strong>3 hospitals</strong> within 7 km',
+    },
+    commercial: {
+      label: 'Commercial', icon: '🛍️', color: '#14B8A6',
+      places: 'Melawati Mall · AEON Alpha Angle · Setapak Central',
+      stat: '<strong>Melawati Mall</strong> 450 m from campus',
+    },
+    employment: {
+      label: 'Employment', icon: '💼', color: '#F59E0B',
+      places: 'Suria KLCC · Tun Razak Exchange · KL Sentral',
+      stat: '<strong>KLCC &amp; TRX</strong> employment hubs',
+    },
+  };
+
+  // ---------------------------------------------------------------------------
+  // CATCHMENT DATA — centred on the MIA campus in Taman Melawati.
+  // TODO VERIFY: every pin except M Vertica, TAR UMT, IIUM, HKL, KLCC, TRX and
+  // KL Sentral is LOCALITY-LEVEL — anchored on a street or township from the
+  // published address, not geocoded, because no geocoder is reachable from here.
+  // Accurate enough for a 22 km catchment view; confirm against Google Maps
+  // before anyone navigates by them.
+  // Distances in popups are computed straight-line from MIA unless `dist` is set.
+  // ---------------------------------------------------------------------------
+  const PLACES = [
+    // Residences — nearest to furthest from campus.
+    { cat:'residence',  name:'MIA — Taman Melawati',                   desc:'The main campus — 294-299 Jalan Bandar 11, Taman Melawati.', coords:MIA, home:true },
+    { cat:'residence',  name:'MIA — City Campus',                      desc:'The institute\'s second campus, in the city centre near KLCC.', coords:MIA_CITY, campus:true },
+    { cat:'residence',  name:'M Adora',                               desc:'Jalan Wangsa Melawati 1 — two 31-storey towers, 677 units. Walk to campus.', coords:[3.208500, 101.739500] },
+    { cat:'residence',  name:'MH Platinum 2',                         desc:'Jalan Usahawan 6, Setapak — three blocks, 1,254 units, completed 2025.', coords:[3.197500, 101.724500] },
+    { cat:'residence',  name:'Rica Residence',                        desc:'48 Jalan Perhentian, Sentul — 39 storeys, 473 units, 300 m to Sentul Barat MRT.', coords:[3.183500, 101.690500] },
+    // Published coordinate: M Vertica sits on Taman Pertama MRT (3.1127389, 101.7292889).
+    { cat:'residence',  name:'M Vertica',                             desc:'555 Jalan Cheras, Taman Pertama — five towers, 3,684 units, 500 m to Maluri.', coords:[3.112739, 101.729289] },
+    { cat:'residence',  name:'Unio Residence',                        desc:'Jalan Kepong — two 36-storey towers, 520 units, 400 m to Kepong Baru MRT.', coords:[3.204300, 101.639500] },
+
+    // Education  (NOTE: this category carries `hidden: true` above, so these pins
+    // are not currently drawn. Kept current anyway so unhiding it is safe.)
+    { cat:'education',  name:'TAR UMT Setapak',                       desc:'Tunku Abdul Rahman University of Management & Technology — 2 km from MIA.', coords:[3.215860, 101.730490] },
+    { cat:'education',  name:'IIUM Gombak',                           desc:'International Islamic University Malaysia main campus.', coords:[3.252800, 101.737500] },
+    { cat:'education',  name:'Universiti Kuala Lumpur (UniKL)',       desc:'Main campus, 1016 Jalan Sultan Ismail.', coords:[3.161110, 101.694000] },
+    { cat:'education',  name:'Universiti Malaya (UM)',                desc:'Malaysia\'s oldest public research university — Lembah Pantai.', coords:[3.121000, 101.654000] },
+
+    // Healthcare — HKL is a published coordinate; the other two are locality-level.
+    { cat:'healthcare', name:'Columbia Asia Hospital Setapak',        desc:'Private hospital on Jalan Danau Saujana — closest to campus.', coords:[3.196600, 101.716700] },
+    { cat:'healthcare', name:'KPJ Ampang Puteri Specialist Hospital', desc:'Private specialist hospital — Jalan Mamanda 9, Ampang.', coords:[3.151200, 101.756200] },
+    { cat:'healthcare', name:'Hospital Kuala Lumpur (HKL)',           desc:'Malaysia\'s largest government hospital — Jalan Pahang.', coords:[3.171444, 101.701806] },
+
+    // Commercial — the everyday catchment around Taman Melawati and Wangsa Maju.
+    { cat:'commercial', name:'Melawati Mall',                         desc:'Jalan Bandar Melawati — the campus\'s nearest mall, 450 m away.', coords:[3.209800, 101.750300] },
+    { cat:'commercial', name:'AEON Alpha Angle',                      desc:'Wangsa Maju shopping centre and hypermarket.', coords:[3.203500, 101.736500] },
+    { cat:'commercial', name:'Setapak Central',                       desc:'Mall on Jalan Genting Klang, beside MH Platinum 2.', coords:[3.199300, 101.717500] },
+
+    // Employment — published coordinates.
+    { cat:'employment', name:'Suria KLCC',                            desc:'Petronas Twin Towers — offices, mall and the city\'s landmark.', coords:[3.157764, 101.711861] },
+    { cat:'employment', name:'Tun Razak Exchange (TRX)',              desc:'Kuala Lumpur\'s international finance district.', coords:[3.142640, 101.717950] },
+    { cat:'employment', name:'KL Sentral',                            desc:'Transport interchange and office hub — Brickfields.', coords:[3.134300, 101.686400] },
+  ];
+
+  const map = L.map('mia-map', { scrollWheelZoom: false, zoomControl: true }).setView(MIA, 13);
+  // CARTO's raster basemaps began requiring an API key (unauthenticated tiles
+  // come back stamped "API KEY REQUIRED"), so this uses OpenStreetMap's standard
+  // tiles instead - keyless, and the most dependable free raster source. OSM's
+  // own styling is far more colourful than the light-grey basemap this page was
+  // designed around, so .leaflet-tile-pane is desaturated in CSS to bring the
+  // minimal look back and keep the orange pins and rings dominant. The filter is
+  // scoped to the tile pane, so markers, labels and the catchment rings - which
+  // live in other panes - keep their full colour.
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+
+  // Catchment rings around the subject — inner 5 km + outer 10 km
+  const ring5km = L.circle(MIA, {
+    radius: 5000,
+    color: '#FF6B1A', weight: 1.5, opacity: 0.55,
+    fillColor: '#FF6B1A', fillOpacity: 0.05,
+    dashArray: '6 8',
+  }).addTo(map);
+  const ring10km = L.circle(MIA, {
+    radius: 10000,
+    color: '#FF6B1A', weight: 1.2, opacity: 0.35,
+    fillColor: '#FF6B1A', fillOpacity: 0.02,
+    dashArray: '3 7',
+  }).addTo(map);
+  // Small ring labels
+  const ringLabel = (latlng, text) => L.marker(latlng, {
+    icon: L.divIcon({
+      className: '',
+      html: `<div class="ring-label">${text}</div>`,
+      iconSize: [0, 0], iconAnchor: [0, 0],
+    }),
+    interactive: false, keyboard: false,
+  }).addTo(map);
+  // Compute label positions north of subject for each ring
+  const metersPerDegLat = 111320;
+  ringLabel([MIA[0] + 5000 / metersPerDegLat, MIA[1]], '5 km');
+  ringLabel([MIA[0] + 10000 / metersPerDegLat, MIA[1]], '10 km');
+
+  const makeIcon = (color, isHome) => L.divIcon({
+    className: '',
+    html: isHome
+      ? `<div class="map-pin home">★</div>`
+      : `<div class="map-pin" style="background:${color}"></div>`,
+    iconSize: isHome ? [40, 40] : [28, 28],
+    iconAnchor: isHome ? [20, 20] : [14, 14],
+    popupAnchor: [0, -16],
+  });
+
+  // Both campuses carry a permanent star label, named so they are told apart.
+  const campusLabel = (text) => L.divIcon({
+    className: '',
+    html: `<div class="map-pin-label"><span class="star">★</span> ${text}</div>`,
+    iconSize: [0, 0], iconAnchor: [-22, 8],
+  });
+  L.marker(MIA,      { icon: campusLabel('MIA Taman Melawati'), interactive: false, keyboard: false }).addTo(map);
+  L.marker(MIA_CITY, { icon: campusLabel('MIA City Campus'),    interactive: false, keyboard: false }).addTo(map);
+
+  const layers = {};
+  Object.entries(CATEGORIES).forEach(([k, c]) => { if (!c.hidden) layers[k] = L.layerGroup(); });
+
+  const formatDistance = (m) => m < 1000 ? `${Math.round(m / 10) * 10} m` : `${(m / 1000).toFixed(m < 10000 ? 1 : 0)} km`;
+
+  // Kept in sync with the .res-label CSS: GAP is the tooltip's vertical offset,
+  // TAIL is how far the pointer sticks out below the pill.
+  const RES_LABEL_GAP = 24;
+  const RES_LABEL_TAIL = 13;
+  const residenceLabels = [];
+
+  PLACES.forEach(p => {
+    const cat = CATEGORIES[p.cat];
+    if (!cat || cat.hidden) return;
+    const marker = L.marker(p.coords, { icon: makeIcon(cat.color, !!p.home || !!p.campus) });
+    // Prefer an explicit (Google Maps) distance when provided; otherwise estimate straight-line.
+    const distanceText = p.home ? null
+      : (p.dist != null ? `${p.dist} km` : `~${formatDistance(L.latLng(MIA).distanceTo(L.latLng(p.coords)))}`);
+    marker.bindPopup(`
+      <div class="pop-cat" style="color:${cat.color}">${cat.label}</div>
+      <div class="pop-title">${p.name}</div>
+      <div class="pop-desc">${p.desc}</div>
+      ${distanceText ? `<div class="pop-distance"><span class="pop-distance-icon">↔</span> <strong>${distanceText}</strong> from MIA</div>` : ''}
+      ${p.tab ? `<a href="#residences" class="pop-cta" data-restab="${p.tab}">View More <span class="arrow">→</span></a>` : ''}
+    `);
+    // Permanent label above each pin — residences show the name + distance, others show the distance
+    const isResidenceLabel = p.cat === 'residence' && !p.home && !p.campus;
+    const tooltipText = isResidenceLabel
+      ? (distanceText ? `${p.name}<span class="res-label-dist">${distanceText}</span>` : p.name)
+      : distanceText;
+    if (tooltipText) {
+      marker.bindTooltip(tooltipText, {
+        permanent: true, direction: 'top',
+        className: isResidenceLabel ? 'res-label' : 'dist-label',
+        // Residence labels carry a ~10px tail, so they need extra clearance to
+        // keep the tip off the pin. RES_LABEL_GAP below must match.
+        offset: [0, isResidenceLabel ? -RES_LABEL_GAP : -16], opacity: 1,
+      });
+    }
+    marker.addTo(layers[p.cat]);
+    if (isResidenceLabel) {
+      residenceLabels.push({ marker, away: L.latLng(MIA).distanceTo(L.latLng(p.coords)) });
+    }
+  });
+
+  // ---------------------------------------------------------------------------
+  // Residence labels are permanent, and three residences sit 250-670 m apart in
+  // Taman Pertama - at the default 22 km view that is under 20 px, so their
+  // labels piled into one unreadable stack. Hide any label that would collide
+  // with one already placed; the nearest residence to the campus wins the space,
+  // and zooming in frees room so the rest reappear on their own. Pins and popups
+  // are untouched, so a suppressed residence is still clickable.
+  // Uses visibility rather than display, so a hidden label can still be measured.
+  // ---------------------------------------------------------------------------
+  residenceLabels.sort((a, b) => a.away - b.away);
+
+  // Labels always sit at their own pin. Where pins are too close for that to be
+  // possible they are grouped into one cluster marker instead of the labels
+  // being lifted away from their pins or hidden. At the default 22 km view the
+  // three Cheras residences are only 9-38 px apart while their labels are
+  // 200-257 px wide, so no arrangement puts all three at their own pins; you
+  // would need a view about 1 km across. Zooming in splits the cluster and each
+  // label reappears anchored to its pin.
+  const clusterLayer = L.layerGroup().addTo(map);
+  const overlaps = (a, b) =>
+    a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+
+  const updateResidenceDisplay = () => {
+    clusterLayer.clearLayers();
+    const items = residenceLabels
+      .map(({ marker }) => {
+        const tip = marker.getTooltip();
+        return { marker, el: tip ? tip.getElement() : null };
+      })
+      .filter(it => it.el && map.hasLayer(it.marker));
+
+    // Reset, then measure every label at its natural anchored position.
+    items.forEach(({ el }) => el.classList.remove('res-label-hidden'));
+    const boxed = items.map(it => {
+      const w = it.el.offsetWidth, h = it.el.offsetHeight;
+      const pt = map.latLngToContainerPoint(it.marker.getLatLng());
+      return { ...it, box: { x: pt.x - w / 2, y: pt.y - RES_LABEL_GAP - h, w, h: h + RES_LABEL_TAIL } };
+    }).filter(it => it.box.w && it.box.h);
+
+    // Group transitively: keep absorbing anything that overlaps the group.
+    const used = new Set();
+    const groups = [];
+    boxed.forEach((seed, i) => {
+      if (used.has(i)) return;
+      const group = [seed];
+      used.add(i);
+      let grew = true;
+      while (grew) {
+        grew = false;
+        boxed.forEach((cand, j) => {
+          if (used.has(j)) return;
+          if (group.some(m => overlaps(m.box, cand.box))) {
+            group.push(cand); used.add(j); grew = true;
+          }
+        });
+      }
+      groups.push(group);
+    });
+
+    groups.forEach(group => {
+      if (group.length === 1) return;   // fits at its own pin, leave it alone
+      // Only the labels collapse. The pins stay drawn - a few pixels apart they
+      // read as one tight dot cluster, they give the cluster's tail something to
+      // point at, and each stays clickable so a popup still names its residence.
+      group.forEach(m => m.el.classList.add('res-label-hidden'));
+      const lls = group.map(m => m.marker.getLatLng());
+      const centre = [
+        lls.reduce((sum, ll) => sum + ll.lat, 0) / lls.length,
+        lls.reduce((sum, ll) => sum + ll.lng, 0) / lls.length,
+      ];
+      const cluster = L.marker(centre, {
+        icon: L.divIcon({
+          className: '',
+          html: `<div class="res-cluster"><span class="rc-count">${group.length}</span>` +
+                `<span class="rc-text">residences</span></div>`,
+          iconSize: [0, 0], iconAnchor: [0, 0],
+        }),
+        keyboard: false,
+      });
+      cluster.bindTooltip(group.map(m => m.marker.getTooltip().getContent().replace(/<[^>]*>/g, ' \u00b7 '))
+        .join('<br>'), { direction: 'top', offset: [0, -18] });
+      cluster.on('click', () => {
+        map.fitBounds(L.latLngBounds(lls), { padding: [90, 90], maxZoom: 16 });
+      });
+      clusterLayer.addLayer(cluster);
+    });
+  };
+  map.on('zoomend moveend', updateResidenceDisplay);
+
+  // Build filter cards
+  const filters = document.getElementById('map-filters');
+  const showAllInput = document.getElementById('map-show-all');
+  const cards = {};
+  let activeKey = 'residence';
+
+  const setVisibility = () => {
+    const showAll = showAllInput.checked;
+    Object.keys(layers).forEach(k => {
+      const shouldShow = showAll || k === activeKey;
+      if (shouldShow) { if (!map.hasLayer(layers[k])) map.addLayer(layers[k]); }
+      else            { if (map.hasLayer(layers[k]))  map.removeLayer(layers[k]); }
+    });
+    Object.entries(cards).forEach(([k, el]) => {
+      el.classList.toggle('active', k === activeKey && !showAll);
+    });
+    updateResidenceDisplay();
+  };
+
+  Object.entries(CATEGORIES).forEach(([key, c]) => {
+    if (c.hidden) return;
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'filter-card';
+    btn.dataset.cat = key;
+    btn.innerHTML = `
+      <div class="fc-head">
+        <span class="fc-icon" style="background:${c.color}1A;color:${c.color}">${c.icon}</span>
+        <span class="fc-title">${c.label}</span>
+        <span class="fc-pulse"></span>
+      </div>
+      <div class="fc-places">${c.places}</div>
+      <div class="fc-stat">${c.stat}</div>
+    `;
+    btn.addEventListener('click', () => {
+      activeKey = key;
+      if (showAllInput.checked) showAllInput.checked = false;
+      setVisibility();
+    });
+    cards[key] = btn;
+    filters.appendChild(btn);
+  });
+
+  showAllInput.addEventListener('change', setVisibility);
+  setVisibility();
+
+  // Fit bounds to show subject + immediate residences with generous padding
+  // Fit to a 22 km square around the campus so the entire 10 km ring is comfortably visible
+  map.fitBounds(L.latLng(MIA).toBounds(22000), { padding: [20, 20] });
+  updateResidenceDisplay();
+});
+
+// --- Lightbox: click to enlarge images in the residences (condo) section ---
+(function initLightbox() {
+  const residences = document.getElementById('residences');
+  const lightbox = document.getElementById('lightbox');
+  if (!residences || !lightbox) return;
+  const lbImg = lightbox.querySelector('img');
+  const closeBtn = lightbox.querySelector('.lightbox-close');
+
+  const open = (src, alt) => {
+    lbImg.src = src;
+    lbImg.alt = alt || '';
+    lightbox.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  };
+  const close = () => {
+    lightbox.classList.remove('open');
+    lbImg.removeAttribute('src');
+    document.body.style.overflow = '';
+  };
+
+  residences.addEventListener('click', (e) => {
+    const img = e.target.closest('img');
+    if (!img || !residences.contains(img)) return;
+    open(img.currentSrc || img.src, img.alt);
+  });
+  closeBtn.addEventListener('click', (e) => { e.stopPropagation(); close(); });
+  lightbox.addEventListener('click', (e) => { if (e.target === lightbox) close(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && lightbox.classList.contains('open')) close();
+  });
+})();
+</script>
+
+</body>
+</html>
