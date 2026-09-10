@@ -2305,7 +2305,7 @@ footer {
         <div class="map-overlay map-overlay-top">
           <span class="map-stat-chip"><span class="chip-dot"></span><strong>5 km</strong> &amp; <strong>10 km</strong> catchment</span>
           <span class="map-stat-chip"><span class="chip-dot"></span><strong>4</strong> residences</span>
-          <span class="map-stat-chip"><span class="chip-dot"></span><strong>500 m</strong> to Suria KLCC</span>
+          <span class="map-stat-chip"><span class="chip-dot"></span><strong>600 m</strong> to Suria KLCC</span>
         </div>
         <div class="map-overlay map-overlay-bottom">
           <div class="map-legend-card">
@@ -2352,7 +2352,11 @@ footer {
   </div>
 
   <!-- Tabs run nearest-to-furthest from the Erican College city campus at
-       Megan Avenue II, Jalan Yap Kwan Seng. Only M Vertica has photography on
+       Megan Avenue II, Jalan Yap Kwan Seng. M Vertica and Nexus are a dead heat
+       - 230 m apart in Taman Pertama, and within 20 m of each other by distance
+       to campus, which is well inside the error on two locality-level pins - so
+       M Vertica leads as the one with published rates and photography rather
+       than on a measured lead. Only M Vertica has photography on
        file; the other three render the neutral .res-photo-empty placeholder
        rather than borrowing another building's pictures. Drop a tower shot in
        and swap the placeholder for an <img> to switch one on, and add `img:`
@@ -2476,7 +2480,7 @@ footer {
     <div class="route-panel active" data-route="mvertica">
       <div class="route-summary">
         <div><div class="v">30&ndash;35 min</div><div class="l">Typical journey</div></div>
-        <div><div class="v">5.7 km</div><div class="l">To campus</div></div>
+        <div><div class="v">5.9 km</div><div class="l">To campus</div></div>
         <div><div class="v">Taman Pertama MRT</div><div class="l">Nearest station</div></div>
       </div>
       <p class="route-steps"><strong>Taman Pertama</strong> on the Kajang Line is at the door, and the <strong>Maluri</strong> MRT&ndash;LRT interchange is 550 m away under cover. Ride the <strong>Kajang Line</strong> three stops to Tun Razak Exchange, change to the <strong>Putrajaya Line</strong> and it is three more to <strong>Ampang Park</strong>, a short walk from campus &mdash; about <strong>30 minutes</strong> all in. By road it is <strong>20&ndash;30 minutes</strong> direct.</p>
@@ -2484,7 +2488,7 @@ footer {
     <div class="route-panel" data-route="nexus">
       <div class="route-summary">
         <div><div class="v">30&ndash;35 min</div><div class="l">Typical journey</div></div>
-        <div><div class="v">5.8 km</div><div class="l">To campus</div></div>
+        <div><div class="v">5.9 km</div><div class="l">To campus</div></div>
         <div><div class="v">Taman Pertama MRT</div><div class="l">Nearest station</div></div>
       </div>
       <p class="route-steps">Nexus shares M Vertica&rsquo;s neighbourhood and its commute, with the bonus of a second station on foot: <strong>Taman Pertama</strong> and <strong>Taman Midah</strong> are both walkable. Kajang Line to <strong>Tun Razak Exchange</strong>, cross to the <strong>Putrajaya Line</strong>, three stops to <strong>Ampang Park</strong> &mdash; roughly <strong>30 minutes</strong> door to door, or <strong>20&ndash;30 minutes</strong> by road.</p>
@@ -2492,7 +2496,7 @@ footer {
     <div class="route-panel" data-route="parc3">
       <div class="route-summary">
         <div><div class="v">35&ndash;40 min</div><div class="l">Typical journey</div></div>
-        <div><div class="v">6.7 km</div><div class="l">To campus</div></div>
+        <div><div class="v">6.9 km</div><div class="l">To campus</div></div>
         <div><div class="v">Taman Mutiara MRT</div><div class="l">Nearest station</div></div>
       </div>
       <p class="route-steps"><strong>Taman Mutiara</strong> on the Kajang Line is the station for Pudu Impian. It is five stops to <strong>Tun Razak Exchange</strong>, then the <strong>Putrajaya Line</strong> three stops to <strong>Ampang Park</strong> &mdash; about <strong>35 minutes</strong> in total. By road, <strong>25&ndash;35 minutes</strong> via Jalan Cheras and Jalan Tun Razak.</p>
@@ -2500,7 +2504,7 @@ footer {
     <div class="route-panel" data-route="metacity">
       <div class="route-summary">
         <div><div class="v">50&ndash;60 min</div><div class="l">Typical journey</div></div>
-        <div><div class="v">19.6 km</div><div class="l">To campus</div></div>
+        <div><div class="v">19.8 km</div><div class="l">To campus</div></div>
         <div><div class="v">Taman Putra Permai MRT</div><div class="l">Nearest station</div></div>
       </div>
       <p class="route-steps">The longest ride, and the simplest: <strong>no transfers at all</strong>. <strong>Taman Putra Permai</strong> is about 200 m away on a covered link bridge, and the <strong>Putrajaya Line</strong> runs straight through to <strong>Ampang Park</strong> beside the campus &mdash; one train, roughly <strong>50&ndash;60 minutes</strong> end to end. By road it is <strong>35&ndash;50 minutes</strong> on the MEX or the Besraya, traffic depending.</p>
@@ -3114,11 +3118,12 @@ window.addEventListener('load', () => {
   // No. 12 Jalan Yap Kwan Seng, 50450 Kuala Lumpur. This sets the map centre,
   // both catchment rings and every computed distance. Erican College runs this
   // one campus, so unlike the previous partner there is a single ★ pin.
-  // TODO VERIFY: locality-level, anchored on Jalan Yap Kwan Seng rather than
-  // geocoded, because no geocoder is reachable from here. It lands about 500 m
-  // from Suria KLCC, which matches the college's own "a few minutes' walk from
-  // the Twin Towers". Confirm against Google Maps.
-  const ERICAN = [3.162119, 101.713069];
+  // Decoded from the supplied plus code 5P77+52 (full 6PM35P77+52), whose cell
+  // is 14 m across, so this is the building rather than the street: it replaced
+  // a locality-level estimate that sat 107 m north-west. Every "To campus"
+  // figure in the route panels above, and the catchment stats below, are
+  // measured from here.
+  const ERICAN = [3.162937, 101.712563];
 
   const CATEGORIES = {
     residence: {
@@ -3136,7 +3141,7 @@ window.addEventListener('load', () => {
     healthcare: {
       label: 'Healthcare', icon: '⚕️', color: '#DC2626',
       places: 'Prince Court · Hospital Kuala Lumpur · Sunway Velocity Medical Centre · KPJ Ampang Puteri',
-      stat: '<strong>Prince Court</strong> 1.2 km from campus',
+      stat: '<strong>Prince Court</strong> 1.3 km from campus',
     },
     commercial: {
       label: 'Commercial', icon: '🛍️', color: '#14B8A6',
