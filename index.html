@@ -1182,48 +1182,6 @@ section { padding: 100px 40px; position: relative; }
   max-width: 1280px; margin: 0 auto;
 }
 
-/* Awards section */
-.awards { background: #ECE7DA; color: var(--ink); }
-.awards-wrap {
-  max-width: 1280px; margin: 0 auto;
-  display: grid; grid-template-columns: 1fr 1fr; gap: 64px;
-  align-items: center;
-}
-.awards-copy .kicker {
-  color: var(--orange);
-  font-size: 12px; text-transform: uppercase; letter-spacing: 0.2em;
-  font-weight: 600; margin-bottom: 14px;
-}
-.awards-copy h3 {
-  font-family: 'Poppins', sans-serif; font-weight: 400;
-  font-size: clamp(28px, 3vw, 36px);
-  margin-bottom: 32px; letter-spacing: -0.01em; color: var(--ink);
-}
-.awards-copy h3 em { font-style: italic; color: var(--orange); }
-.awards-grid {
-  display: grid; grid-template-columns: repeat(5, 1fr); gap: 28px 20px;
-  align-items: center;
-}
-.awards-grid img {
-  width: 100%; height: auto; max-height: 110px;
-  object-fit: contain;
-  opacity: 0.9; transition: opacity 0.3s, transform 0.3s;
-}
-.awards-grid img:hover { opacity: 1; transform: translateY(-2px); }
-.awards-team-photo {
-  border-radius: 28px; overflow: hidden;
-  box-shadow: 0 30px 60px -20px rgba(14,14,16,0.25);
-}
-.awards-team-photo img {
-  display: block; width: 100%; height: auto;
-}
-@media (max-width: 900px) {
-  .awards-wrap { grid-template-columns: 1fr; gap: 40px; }
-}
-@media (max-width: 540px) {
-  .awards-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
-}
-
 /* Smart lock spotlight */
 .lock-spotlight { background: var(--paper-warm); }
 .lock-wrap {
@@ -2664,31 +2622,6 @@ footer {
         <div class="big">4,500<em>+</em></div>
         <div class="desc">spaces managed across Malaysia by our experienced student-housing team. Yours could be next.</div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- AWARDS -->
-<section class="awards" hidden>
-  <div class="awards-wrap">
-    <div class="awards-copy">
-      <div class="kicker">Recognition</div>
-      <h3>Award Winning <em>Team</em></h3>
-      <div class="awards-grid">
-        <img src="Logo_MY2a.png" alt="Award logo">
-        <img src="WLOGO-02.png" alt="Award logo">
-        <img src="WLOGO-03.png" alt="Award logo">
-        <img src="WLOGO-04.png" alt="Award logo">
-        <img src="WLOGO-05.png" alt="Award logo">
-        <img src="WLOGO-06.png" alt="Award logo">
-        <img src="WLOGO-07.png" alt="Award logo">
-        <img src="WLOGO-08.png" alt="Award logo">
-        <img src="WLOGO-09.png" alt="Award logo">
-        <img src="WLOGO-10.png" alt="Award logo">
-      </div>
-    </div>
-    <div class="awards-team-photo">
-      <img src="BeLiveXMas2025.jpg" alt="BeLive team — Christmas 2025">
     </div>
   </div>
 </section>
