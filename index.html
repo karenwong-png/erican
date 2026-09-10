@@ -72,18 +72,18 @@ nav.top {
   color: var(--orange-deep);
 }
 .brand img.logo-belive { height: 36px; width: auto; display: block; }
-.brand .logo-erican { height: 42px; width: auto; aspect-ratio: 1682 / 713; display: block; }
+.brand .logo-erican { height: 42px; width: auto; display: block; }
 .brand .x { color: var(--ink); opacity: 0.3; font-size: 18px; font-style: italic; }
 /* The dark footer reuses .brand, where an ink-coloured separator is invisible. */
 footer .brand .x { color: var(--paper); }
 
-/* Campus lock-up. The Erican College mark is drawn inline as an SVG symbol
-   (#erican-logo, defined just after <body>) rather than shipped as a bitmap, so
-   it stays crisp at any size and needs no reversed cut for the dark footer: the
-   navy plate is part of the artwork, so one symbol serves the paper nav, the
-   partnership card and the footer alike. Height is locked by the
-   .logo-erican rules here and under .built-together-logos below; the
-   aspect-ratio keeps the box correct before the SVG has laid out. */
+/* Campus lock-up. erican-logo.png is the supplied Erican College artwork,
+   trimmed to the navy plate. Because the plate is opaque and part of the mark,
+   one file serves the paper nav, the partnership card and the dark footer
+   alike - no reversed cut is needed, unlike the beLive mark beside it, which
+   ships light and dark variants. Height is locked by the .logo-erican rules
+   here and under .built-together-logos below; the file is 845x360, roughly six
+   times the largest size it renders at, so it stays sharp on retina. */
 
 nav ul { list-style: none; display: flex; gap: 36px; }
 nav ul a {
@@ -518,7 +518,7 @@ section { padding: 100px 40px; position: relative; }
   position: relative; z-index: 1;
 }
 .built-together-logos img { height: 56px; width: auto; display: block; }
-.built-together-logos .logo-erican { height: 56px; width: auto; aspect-ratio: 1682 / 713; display: block; }
+.built-together-logos .logo-erican { height: 56px; width: auto; display: block; }
 .built-together-logos .bt-x {
   font-size: 26px; color: var(--ink); opacity: 0.3; font-style: italic;
 }
@@ -2134,34 +2134,6 @@ footer {
 </head>
 <body>
 
-<!-- ERICAN COLLEGE LOCK-UP ---------------------------------------------------
-     Drawn inline once and pulled in with <use> wherever the mark appears, so
-     the nav, the partnership card and the dark footer all share one source of
-     truth. The navy plate belongs to the artwork, which is why no reversed
-     cut is needed for the footer. Wordmarks are set in Poppins - already
-     loaded for the page - with textLength locking each word to the width of
-     the supplied artwork, so the lock-up keeps its extended proportions even
-     if the webfont has not landed yet. To drop in the official vector, replace
-     the contents of the <symbol> and leave every <use> alone.
-     Colours: navy plate #123A8E, ERICAN #FFF100, red dot #E8232A. -->
-<svg width="0" height="0" aria-hidden="true" focusable="false" style="position:absolute">
-  <symbol id="erican-logo" viewBox="0 0 1682 713">
-    <rect width="1682" height="713" fill="#123A8E"/>
-    <!-- The dot over the "i" of ERiCAN: red disc on a white ring. -->
-    <circle cx="678" cy="76" r="63" fill="#FFFFFF"/>
-    <circle cx="678" cy="76" r="50" fill="#E8232A"/>
-    <text x="60" y="338" textLength="1600" lengthAdjust="spacingAndGlyphs"
-          font-family="Poppins, Helvetica, Arial, sans-serif" font-weight="800"
-          font-size="300" fill="#FFF100">ERICAN</text>
-    <text x="55" y="548" textLength="1585" lengthAdjust="spacingAndGlyphs"
-          font-family="Poppins, Helvetica, Arial, sans-serif" font-weight="600"
-          font-size="250" fill="#FFFFFF">COLLEGE</text>
-    <text x="830" y="663" textLength="810" lengthAdjust="spacingAndGlyphs"
-          font-family="Poppins, Helvetica, Arial, sans-serif" font-weight="500"
-          font-style="italic" font-size="155" fill="#FFFFFF">yes, you can</text>
-  </symbol>
-</svg>
-
 <!-- BOOKING LINK: every "Book Now" / "Enquire" / "Check Availability" button
      on this page points at the one Erican College enquiry form. Eight of them,
      including the two injected by renderRooms() in the script at the foot of
@@ -2169,7 +2141,7 @@ footer {
 <nav class="top">
   <div class="brand">
     <div class="brand-logos">
-      <svg class="logo-erican" role="img" aria-label="Erican College"><use href="#erican-logo"></use></svg>
+      <img class="logo-erican" src="erican-logo.png" alt="Erican College">
       <span class="x">×</span>
       <img class="logo-belive" src="beLive_Logo_F_fit.png" alt="beLive">
     </div>
@@ -2213,7 +2185,7 @@ footer {
   <div class="built-together-card">
     <div class="built-together-top">
       <div class="built-together-logos">
-        <svg class="logo-erican" role="img" aria-label="Erican College"><use href="#erican-logo"></use></svg>
+        <img class="logo-erican" src="erican-logo.png" alt="Erican College">
         <span class="bt-x">×</span>
         <img src="beLive_Logo_F_fit.png" alt="beLive">
       </div>
@@ -2786,7 +2758,7 @@ footer {
 <footer>
   <div class="foot">
     <div class="brand">
-      <svg class="logo-erican" role="img" aria-label="Erican College"><use href="#erican-logo"></use></svg>
+      <img class="logo-erican" src="erican-logo.png" alt="Erican College">
       <span class="x">×</span>
       <img class="logo-belive" src="beLive_Logo_F_fit_w.png" alt="beLive">
     </div>
