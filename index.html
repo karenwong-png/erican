@@ -110,6 +110,37 @@ nav ul a:hover::after { transform: scaleX(1); }
 .cta-btn.outline:hover { background: var(--ink); color: var(--paper); }
 .cta-btn.orange { background: var(--orange); }
 .cta-btn.orange:hover { background: var(--orange-deep); }
+.nav-actions { display: flex; align-items: center; gap: 12px; }
+.lang-switch {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 10px 7px 12px; border-radius: 100px;
+  border: 1.5px solid var(--line); background: rgba(255,255,255,0.6);
+}
+.lang-switch .lang-globe { font-size: 13px; line-height: 1; }
+.lang-switch select {
+  border: 0; background: none; outline: none; cursor: pointer;
+  font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500;
+  color: var(--ink); padding-right: 2px;
+}
+.lang-switch:focus-within { border-color: var(--orange); }
+footer .lang-switch { border-color: rgba(250,247,242,0.3); background: rgba(255,255,255,0.08); }
+
+/* Arabic reverses the page, but the map must not reverse with it: Leaflet
+   positions its panes, controls and zoom buttons on the assumption of LTR. */
+[dir="rtl"] #campus-map,
+[dir="rtl"] #campus-map *,
+[dir="rtl"] .leaflet-container,
+[dir="rtl"] .leaflet-container * { direction: ltr; }
+
+/* Figures stay left-to-right inside the right-to-left page: bidi otherwise
+   moves a trailing sign to the wrong end, rendering "4,500+" as "+4,500". */
+[dir="rtl"] .hero-stats .num,
+[dir="rtl"] .res-stat .v,
+[dir="rtl"] .route-summary .v,
+[dir="rtl"] .rprice,
+[dir="rtl"] .pr-value,
+[dir="rtl"] .why-stat-card .big { direction: ltr; }
+
 .cta-btn .arrow { transition: transform 0.25s; }
 .cta-btn:hover .arrow { transform: translateX(4px); }
 
@@ -127,6 +158,10 @@ nav ul a:hover::after { transform: scaleX(1); }
     padding: 9px 16px; font-size: 13px; flex: 0 0 auto;
   }
   nav.top .cta-btn .arrow { display: none; }
+  .nav-actions { gap: 8px; }
+  .lang-switch { padding: 5px 8px; }
+  .lang-switch select { font-size: 12px; }
+  .lang-switch .lang-globe { display: none; }
 }
 
 /* ---------- HERO ---------- */
@@ -2173,7 +2208,20 @@ footer {
     <li><a href="#difference">BeLive Difference</a></li>
     <li><a href="#how-to-book">How to Book</a></li>
   </ul>
-  <a href="https://bit.ly/Erican_accommodation_partner" target="_blank" rel="noopener" class="cta-btn">Book Now <span class="arrow">→</span></a>
+  <div class="nav-actions">
+    <!-- Option labels are each written in their own script and are skipped by
+         the translator, so every reader can find their language. -->
+    <label class="lang-switch">
+      <span class="lang-globe" aria-hidden="true">🌐</span>
+      <select id="lang-select" aria-label="Language / 语言 / Bahasa / اللغة">
+        <option value="en">English</option>
+        <option value="zh">中文</option>
+        <option value="ms">Bahasa Melayu</option>
+        <option value="ar">العربية</option>
+      </select>
+    </label>
+    <a href="https://bit.ly/Erican_accommodation_partner" target="_blank" rel="noopener" class="cta-btn">Book Now <span class="arrow">→</span></a>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -2794,6 +2842,8 @@ footer {
 <a class="floating-book" href="https://bit.ly/Erican_accommodation_partner" target="_blank" rel="noopener" aria-label="Book a room now — opens the booking form in a new tab">
   <img src="Booking_Button.png" alt="Book Now — your new home awaits">
 </a>
+
+<script src="i18n.js"></script>
 
 <div class="lightbox" id="lightbox" role="dialog" aria-label="Image preview" aria-modal="true">
   <button class="lightbox-close" type="button" aria-label="Close">&times;</button>
@@ -3518,6 +3568,109 @@ window.addEventListener('load', () => {
   map.fitBounds(view, { padding: [20, 20] });
   updateResidenceDisplay();
 });
+
+// --- Language switcher -----------------------------------------------------
+// Translation works by walking text nodes and matching each against a
+// dictionary keyed on the exact English string, so no element needs a
+// data-i18n attribute. The English original of every node is remembered in a
+// WeakMap, and every switch translates FROM that original rather than from
+// whatever is on screen, which makes switching lossless in any order.
+(function initLanguage() {
+  const I = window.BELIVE_I18N;
+  const sel = document.getElementById('lang-select');
+  if (!I || !sel) return;
+
+  const STORE = 'belive-lang';
+  const RTL = { ar: true };
+  const ORIGINAL = new WeakMap();
+  // The switcher's own options are each written in their own script; the map
+  // renders place names into its tiles, and its attribution is a credit.
+  const SKIP = '.lang-switch, script, style, noscript';
+
+  // Longest key first, so "Single Room" cannot match inside a longer name.
+  const phraseList = {};
+  Object.keys(I.phrases).forEach(l => {
+    phraseList[l] = Object.keys(I.phrases[l])
+      .sort((a, b) => b.length - a.length)
+      .map(k => [k, I.phrases[l][k]]);
+  });
+
+  let current = 'en';
+  let applying = false;
+
+  function translate(raw, lang) {
+    if (lang === 'en') return raw;
+    const key = raw.trim();
+    if (!key) return raw;
+    const exact = I.dict[lang][key];
+    // "" is a legitimate translation - a heading span that collapses in another
+    // language - so test for undefined, never for truthiness.
+    if (exact !== undefined) return raw.replace(key, exact);
+    // Strings assembled in JS ("M Vertica - Master Room") match no single key.
+    let out = raw, hit = false;
+    for (const pair of phraseList[lang]) {
+      if (out.indexOf(pair[0]) !== -1) { out = out.split(pair[0]).join(pair[1]); hit = true; }
+    }
+    return hit ? out : raw;
+  }
+
+  function walk(root, lang) {
+    if (!root) return;
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: n => {
+        if (!n.parentElement || n.parentElement.closest(SKIP)) return NodeFilter.FILTER_REJECT;
+        // A node we have already translated may be empty right now, because ""
+        // is a legitimate translation. It has to stay visitable or switching
+        // back could never restore it.
+        if (!n.nodeValue.trim() && !ORIGINAL.has(n)) return NodeFilter.FILTER_REJECT;
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    });
+    const nodes = [];
+    for (let n = w.nextNode(); n; n = w.nextNode()) nodes.push(n);
+    nodes.forEach(n => {
+      if (!ORIGINAL.has(n)) ORIGINAL.set(n, n.nodeValue);
+      const next = translate(ORIGINAL.get(n), lang);
+      if (n.nodeValue !== next) n.nodeValue = next;
+    });
+  }
+
+  function apply(lang) {
+    applying = true;
+    current = lang;
+    document.documentElement.setAttribute('lang', lang);
+    document.documentElement.setAttribute('dir', RTL[lang] ? 'rtl' : 'ltr');
+    walk(document.body, lang);
+    applying = false;
+    try { localStorage.setItem(STORE, lang); } catch (e) { /* private mode */ }
+  }
+
+  // Containers whose contents are built by JS AFTER a language is applied, so
+  // they arrive in English and must be caught as they appear. The map filter
+  // cards are the latest of them - they are built on window 'load'.
+  const WATCH = ['#rooms-strip', '#common-grid', '#calc-breakdown', '#calc-room',
+                 '#calc-condo', '#map-filters', '#campus-map'];
+  function observe() {
+    WATCH.forEach(q => {
+      const el = document.querySelector(q);
+      if (!el) return;
+      new MutationObserver(() => {
+        if (applying || current === 'en') return;
+        applying = true;
+        walk(el, current);          // idempotent: always re-derived from ORIGINAL
+        applying = false;
+      }).observe(el, { childList: true, subtree: true, characterData: true });
+    });
+  }
+
+  let saved = null;
+  try { saved = localStorage.getItem(STORE); } catch (e) { /* private mode */ }
+  if (saved && I.dict[saved]) { sel.value = saved; apply(saved); }
+  sel.addEventListener('change', () => apply(sel.value));
+  observe();
+  // The map builds its filter cards on 'load'; re-sweep once after that.
+  window.addEventListener('load', () => { if (current !== 'en') apply(current); });
+})();
 
 // --- Lightbox: click to enlarge images in the residences (condo) section ---
 (function initLightbox() {

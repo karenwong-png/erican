@@ -1,0 +1,16 @@
+{
+"12-month tenancy": ["12 个月租期", "sewaan 12 bulan", "عقد ١٢ شهرًا"],
+"International student": ["国际学生", "Pelajar antarabangsa", "طالب دولي"],
+"Local student": ["本地学生", "Pelajar tempatan", "طالب محلي"],
+"incl. 8% SST": ["含 8% 销售与服务税", "termasuk SST 8%", "شامل ضريبة ٨٪"],
+"Supreme Master": ["尊享主人房", "Supreme Master", "رئيسية فاخرة"],
+"Supreme Middle": ["尊享中房", "Supreme Middle", "متوسطة فاخرة"],
+"Balcony Room": ["阳台房", "Bilik Balkoni", "غرفة بشرفة"],
+"Queen Common": ["大床共用房", "Queen Sepunya", "كوين مشتركة"],
+"Single Common": ["单人共用房", "Single Sepunya", "مفردة مشتركة"],
+"Master Room": ["主人房", "Bilik Master", "الغرفة الرئيسية"],
+"Double Room": ["双人房", "Bilik Double", "غرفة مزدوجة"],
+"Single Room": ["单人房", "Bilik Single", "غرفة مفردة"],
+"Queen Room": ["大床房", "Bilik Queen", "غرفة كوين"],
+"/mo": ["/月", "/bln", "/شهريًا"]
+}

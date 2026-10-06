@@ -1,0 +1,522 @@
+{
+ "to": [
+  "至",
+  "ke",
+  "إلى"
+ ],
+ "for": [
+  "献给",
+  "untuk pelajar",
+  "لطلاب"
+ ],
+ "pay": [
+  "支付的费用",
+  "anda bayar",
+  "تدفعه فعليًا"
+ ],
+ ".": [
+  "。",
+  ".",
+  "."
+ ],
+ "Yard": [
+  "洗衣区",
+  "Ruang Dobi",
+  "منطقة الغسيل"
+ ],
+ "Walk": [
+  "步行",
+  "Berjalan",
+  "امشِ"
+ ],
+ "Smart": [
+  "智能",
+  "Pintar",
+  "ذكية"
+ ],
+ "feels": [
+  "就是",
+  "terasa",
+  "تشبهك"
+ ],
+ "Units": [
+  "单位",
+  "Unit",
+  "وحدة"
+ ],
+ "sq ft": [
+  "平方英尺",
+  "kaki persegi",
+  "قدم مربع"
+ ],
+ "rooms": [
+  "房型",
+  "bilik",
+  "الغرف"
+ ],
+ "Note:": [
+  "注意：",
+  "Nota:",
+  "ملاحظة:"
+ ],
+ "Living": [
+  "生活",
+  "Kehidupan",
+  "المعيشة"
+ ],
+ "Towers": [
+  "座楼",
+  "Menara",
+  "أبراج"
+ ],
+ "To MRT": [
+  "至地铁站",
+  "Ke MRT",
+  "إلى المترو"
+ ],
+ "Garden": [
+  "花园",
+  "Taman",
+  "حديقة"
+ ],
+ "Shared": [
+  "共享",
+  "Ruang",
+  "المساحات"
+ ],
+ "spaces": [
+  "空间",
+  "Kongsi",
+  "المشتركة"
+ ],
+ "catchment": [
+  "辐射范围",
+  "kawasan tadahan",
+  "نطاق التغطية"
+ ],
+ "like you.": [
+  "属于您。",
+  "seperti anda.",
+  "تمامًا."
+ ],
+ "Jacuzzi": [
+  "按摩池",
+  "Jakuzi",
+  "جاكوزي"
+ ],
+ "BBQ Pit": [
+  "烧烤区",
+  "Tapak BBQ",
+  "منطقة شواء"
+ ],
+ "Storeys": [
+  "层数",
+  "Tingkat",
+  "طوابق"
+ ],
+ "Nursery": [
+  "托儿所",
+  "Taska",
+  "حضانة"
+ ],
+ "/ month": [
+  "/ 月",
+  "/ bulan",
+  "/ شهريًا"
+ ],
+ "Kitchen": [
+  "厨房",
+  "Dapur",
+  "مطبخ"
+ ],
+ "Enquire": [
+  "咨询",
+  "Tanya",
+  "استفسر"
+ ],
+ "Move In": [
+  "入住",
+  "Masuk",
+  "انتقل للسكن"
+ ],
+ "Book Now": [
+  "立即预订",
+  "Tempah Sekarang",
+  "احجز الآن"
+ ],
+ "Students": [
+  "学生",
+  "",
+  ""
+ ],
+ "Show all": [
+  "显示全部",
+  "Tunjuk semua",
+  "عرض الكل"
+ ],
+ "4 BeLive": [
+  "4 个 BeLive",
+  "4 BeLive",
+  "4 من BeLive"
+ ],
+ "BBQ Area": [
+  "烧烤区",
+  "Kawasan BBQ",
+  "منطقة الشواء"
+ ],
+ "Car Park": [
+  "停车位",
+  "Tempat Letak Kereta",
+  "موقف السيارات"
+ ],
+ "Exclusive": [
+  "专属",
+  "Kediaman",
+  "سكن مشترك"
+ ],
+ "Co-Living": [
+  "共居住宿",
+  "Co-Living Eksklusif",
+  "حصري"
+ ],
+ "Free WiFi": [
+  "免费无线网络",
+  "WiFi Percuma",
+  "واي فاي مجاني"
+ ],
+ "Yoga Deck": [
+  "瑜伽平台",
+  "Dek Yoga",
+  "منصة يوغا"
+ ],
+ "Clubhouse": [
+  "会所",
+  "Rumah Kelab",
+  "نادي السكن"
+ ],
+ "50 m Pool": [
+  "50 米泳池",
+  "Kolam 50 m",
+  "مسبح 50 م"
+ ],
+ "Gymnasium": [
+  "健身房",
+  "Gimnasium",
+  "صالة رياضية"
+ ],
+ "Completed": [
+  "落成年份",
+  "Siap",
+  "سنة الإنجاز"
+ ],
+ "To campus": [
+  "至校园",
+  "Ke kampus",
+  "إلى الحرم"
+ ],
+ "8 minutes": [
+  "8 分钟",
+  "8 minit",
+  "٨ دقائق"
+ ],
+ "2 minutes": [
+  "2 分钟",
+  "2 minit",
+  "دقيقتان"
+ ],
+ ", roughly": [
+  "，约",
+  ", kira-kira",
+  "، نحو"
+ ],
+ "Room Type": [
+  "房型",
+  "Jenis Bilik",
+  "نوع الغرفة"
+ ],
+ "Why BeLive": [
+  "为何选择 BeLive",
+  "Kenapa BeLive",
+  "لماذا BeLive"
+ ],
+ "Residences": [
+  "住宅",
+  "Kediaman",
+  "المساكن"
+ ],
+ "Smart Lock": [
+  "智能门锁",
+  "Kunci Pintar",
+  "قفل ذكي"
+ ],
+ "Worry-Free": [
+  "无忧",
+  "Bebas Risau",
+  "بلا قلق"
+ ],
+ "residences": [
+  "个住宅",
+  "kediaman",
+  "مساكن"
+ ],
+ "Map Legend": [
+  "地图图例",
+  "Petunjuk Peta",
+  "مفتاح الخريطة"
+ ],
+ "Filter Map": [
+  "筛选地图",
+  "Tapis Peta",
+  "تصفية الخريطة"
+ ],
+ "Healthcare": [
+  "医疗",
+  "Kesihatan",
+  "الرعاية الصحية"
+ ],
+ "Commercial": [
+  "商业",
+  "Komersial",
+  "التجارة"
+ ],
+ "Employment": [
+  "就业",
+  "Pekerjaan",
+  "العمل"
+ ],
+ "Facilities": [
+  "设施",
+  "Kemudahan",
+  "مرافق"
+ ],
+ "Tea Garden": [
+  "茶园",
+  "Taman Teh",
+  "حديقة الشاي"
+ ],
+ "Playground": [
+  "游乐场",
+  "Taman Permainan",
+  "ملعب أطفال"
+ ],
+ "Sky Lounge": [
+  "空中休息厅",
+  "Ruang Santai Sky",
+  "صالة علوية"
+ ],
+ "Games Room": [
+  "游戏室",
+  "Bilik Permainan",
+  "غرفة ألعاب"
+ ],
+ "Getting to": [
+  "前往",
+  "Perjalanan ke",
+  "الوصول إلى"
+ ],
+ "10 minutes": [
+  "10 分钟",
+  "10 minit",
+  "١٠ دقائق"
+ ],
+ "25 minutes": [
+  "25 分钟",
+  "25 minit",
+  "٢٥ دقيقة"
+ ],
+ "Refundable": [
+  "可退还",
+  "Boleh Dipulangkan",
+  "قابل للاسترداد"
+ ],
+ "Rent Safe,": [
+  "安心租住，",
+  "Sewa Selamat,",
+  "استأجر بأمان،"
+ ],
+ "Queen Room": [
+  "大床房",
+  "Bilik Queen",
+  "غرفة كوين"
+ ],
+ "direct.": [
+  "直达。",
+  "terus.",
+  "مباشرة."
+ ],
+ "all in.": [
+  "全程。",
+  "kesemuanya.",
+  "إجمالًا."
+ ],
+ "How to Book": [
+  "如何预订",
+  "Cara Menempah",
+  "كيفية الحجز"
+ ],
+ "Partnership": [
+  "合作伙伴",
+  "Perkongsian",
+  "شراكة"
+ ],
+ "Comfortable": [
+  "舒适",
+  "Selesa",
+  "مريحة"
+ ],
+ "Low Deposit": [
+  "低押金",
+  "Deposit Rendah",
+  "وديعة منخفضة"
+ ],
+ "Maze Garden": [
+  "迷宫花园",
+  "Taman Labirin",
+  "حديقة المتاهة"
+ ],
+ "Mini Market": [
+  "迷你超市",
+  "Pasar Mini",
+  "بقالة صغيرة"
+ ],
+ "Launderette": [
+  "自助洗衣房",
+  "Dobi Layan Diri",
+  "مغسلة ذاتية"
+ ],
+ "Master Room": [
+  "主人房",
+  "Bilik Master",
+  "الغرفة الرئيسية"
+ ],
+ "Double Room": [
+  "双人房",
+  "Bilik Double",
+  "غرفة مزدوجة"
+ ],
+ "Single Room": [
+  "单人房",
+  "Bilik Single",
+  "غرفة مفردة"
+ ],
+ "Common Area": [
+  "公共区域",
+  "Ruang Sepunya",
+  "منطقة مشتركة"
+ ],
+ "one stop to": [
+  "一站至",
+  "satu hentian ke",
+  "محطة واحدة إلى"
+ ],
+ ", then walk": [
+  "，然后步行",
+  ", kemudian berjalan",
+  "، ثم امشِ"
+ ],
+ "of walking,": [
+  "的步行路程，",
+  "berjalan kaki,",
+  "مشيًا،"
+ ],
+ ", 150 m, to": [
+  "，150 米，至",
+  ", 150 m, ke",
+  "، ١٥٠ م، إلى"
+ ],
+ "done right.": [
+  "做到最好。",
+  "dengan betul.",
+  "كما ينبغي."
+ ],
+ "four steps.": [
+  "四个步骤。",
+  "empat langkah.",
+  "أربع خطوات."
+ ],
+ "Enquire Now": [
+  "立即咨询",
+  "Tanya Sekarang",
+  "استفسر الآن"
+ ],
+ "Stay Happy.": [
+  "快乐生活。",
+  "Tinggal Gembira.",
+  "وعِش بسعادة."
+ ],
+ "From / month": [
+  "起 / 每月",
+  "Dari / bulan",
+  "ابتداءً من / شهريًا"
+ ],
+ "24/7 Support": [
+  "全天候支援",
+  "Sokongan 24/7",
+  "دعم ٢٤/٧"
+ ],
+ "contributors": [
+  "贡献者",
+  "penyumbang",
+  "المساهمون"
+ ],
+ "Tennis Court": [
+  "网球场",
+  "Gelanggang Tenis",
+  "ملعب تنس"
+ ],
+ "Futsal Court": [
+  "五人制足球场",
+  "Gelanggang Futsal",
+  "ملعب فوتسال"
+ ],
+ "Viewing Deck": [
+  "观景台",
+  "Dek Pemandangan",
+  "شرفة بانورامية"
+ ],
+ "Reading Room": [
+  "阅览室",
+  "Bilik Bacaan",
+  "غرفة مطالعة"
+ ],
+ "no transfers": [
+  "无需换乘",
+  "tanpa pertukaran",
+  "دون تبديل"
+ ],
+ "A community.": [
+  "更是一个社区。",
+  "Sebuah komuniti.",
+  "بل مجتمع كامل."
+ ],
+ "Cost savings": [
+  "节省开销",
+  "Jimat Kos",
+  "توفير في التكاليف"
+ ],
+ "Student Type": [
+  "学生类别",
+  "Jenis Pelajar",
+  "فئة الطالب"
+ ],
+ "Not required": [
+  "不需要",
+  "Tidak perlu",
+  "غير مطلوب"
+ ],
+ "Not included": [
+  "未包含",
+  "Tidak termasuk",
+  "غير مشمول"
+ ],
+ "Balcony Room": [
+  "阳台房",
+  "Bilik Balkoni",
+  "غرفة بشرفة"
+ ],
+ "Queen Common": [
+  "大床共用房",
+  "Queen Sepunya",
+  "كوين مشتركة"
+ ]
+}
