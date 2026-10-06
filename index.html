@@ -110,20 +110,35 @@ nav ul a:hover::after { transform: scaleX(1); }
 .cta-btn.outline:hover { background: var(--ink); color: var(--paper); }
 .cta-btn.orange { background: var(--orange); }
 .cta-btn.orange:hover { background: var(--orange-deep); }
+/* ---------- LANGUAGE SWITCHER ----------
+   Matches the control on the BeLive x ViTrox site: the pill is the <select>
+   itself with its native arrow suppressed and a drawn chevron in its place,
+   rather than a bordered wrapper around a bare select. The visible globe is
+   gone; the field is labelled for screen readers instead. */
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
 .nav-actions { display: flex; align-items: center; gap: 12px; }
-.lang-switch {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 7px 10px 7px 12px; border-radius: 100px;
-  border: 1.5px solid var(--line); background: rgba(255,255,255,0.6);
-}
-.lang-switch .lang-globe { font-size: 13px; line-height: 1; }
 .lang-switch select {
-  border: 0; background: none; outline: none; cursor: pointer;
-  font-family: 'Poppins', sans-serif; font-size: 13px; font-weight: 500;
-  color: var(--ink); padding-right: 2px;
+  appearance: none; -webkit-appearance: none;
+  font-family: 'Poppins', system-ui, sans-serif;
+  font-size: 13px; font-weight: 500; color: var(--ink);
+  background: transparent;
+  border: 1.5px solid var(--line); border-radius: 100px;
+  padding: 9px 30px 9px 14px; cursor: pointer;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'><path d='M1 1l4 4 4-4' fill='none' stroke='%230E0E10' stroke-width='1.6' stroke-linecap='round'/></svg>");
+  background-repeat: no-repeat; background-position: right 12px center;
+  transition: border-color 0.2s, background-color 0.2s;
 }
-.lang-switch:focus-within { border-color: var(--orange); }
-footer .lang-switch { border-color: rgba(250,247,242,0.3); background: rgba(255,255,255,0.08); }
+.lang-switch select:hover { border-color: var(--orange); }
+.lang-switch select:focus-visible {
+  outline: none; border-color: var(--orange); box-shadow: 0 0 0 3px rgba(255,107,26,0.15);
+}
+/* In Arabic the chevron moves to the other end with the text. */
+[dir="rtl"] .lang-switch select {
+  padding: 9px 14px 9px 30px; background-position: left 12px center;
+}
 
 /* Arabic reverses the page, but the map must not reverse with it: Leaflet
    positions its panes, controls and zoom buttons on the assumption of LTR. */
@@ -159,9 +174,7 @@ footer .lang-switch { border-color: rgba(250,247,242,0.3); background: rgba(255,
   }
   nav.top .cta-btn .arrow { display: none; }
   .nav-actions { gap: 8px; }
-  .lang-switch { padding: 5px 8px; }
-  .lang-switch select { font-size: 12px; }
-  .lang-switch .lang-globe { display: none; }
+  .lang-switch select { font-size: 12px; padding: 7px 26px 7px 10px; }
 }
 
 /* ---------- HERO ---------- */
@@ -2212,12 +2225,12 @@ footer {
     <!-- Option labels are each written in their own script and are skipped by
          the translator, so every reader can find their language. -->
     <label class="lang-switch">
-      <span class="lang-globe" aria-hidden="true">🌐</span>
-      <select id="lang-select" aria-label="Language / 语言 / Bahasa / اللغة">
-        <option value="en">English</option>
-        <option value="zh">中文</option>
-        <option value="ms">Bahasa Melayu</option>
-        <option value="ar">العربية</option>
+      <span class="sr-only">Language</span>
+      <select id="lang-select" aria-label="Select language">
+        <option value="en">EN&nbsp;·&nbsp;English</option>
+        <option value="zh">中文&nbsp;·&nbsp;Chinese</option>
+        <option value="ms">BM&nbsp;·&nbsp;Bahasa Melayu</option>
+        <option value="ar">AR&nbsp;·&nbsp;العربية</option>
       </select>
     </label>
     <a href="https://bit.ly/Erican_accommodation_partner" target="_blank" rel="noopener" class="cta-btn">Book Now <span class="arrow">→</span></a>
