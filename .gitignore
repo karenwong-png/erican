@@ -1,0 +1,5 @@
+# Playwright verification artefacts, written into the repo root when the
+# harness is driven from here. Never part of the site.
+ar-*.png
+*.pyc
+__pycache__/

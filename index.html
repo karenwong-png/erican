@@ -2241,7 +2241,7 @@ footer {
     <div class="hero-stats">
       <div class="stat"><div class="num">4,500+</div><div class="label">Spaces Managed</div></div>
       <div class="stat"><div class="num">4</div><div class="label">Residences</div></div>
-      <div class="stat"><div class="num">RM700</div><div class="label">From / month</div></div>
+      <div class="stat"><div class="num" data-from-price>RM580</div><div class="label">From / month</div></div>
     </div>
   </div>
   <div class="hero-visual" hidden></div>
@@ -2808,7 +2808,8 @@ footer {
     <p class="payment-disclaimer">
       <strong>Note:</strong> Prices are inclusive of 8% SST. Any adjustments or changes will be determined based on the monthly rental amount and the agreed rental terms.<br><br>
       <strong>Terms &amp; Conditions:</strong> Prices shown are for reference only. Figures are based on a <strong>12-month tenancy</strong>; tenancies of less than 12 months carry a different rental rate. Final figures will be confirmed by the BeLive team before signing.<br><br>
-      <strong>Student Type:</strong> Local students have the security deposit waived. Rental charges are the same for local and international students. Select your student type above for the applicable breakdown.
+      <strong>Student Type:</strong> Local students have the security deposit waived. Rental charges are the same for local and international students. Select your student type above for the applicable breakdown.<br><br>
+      <strong>Language:</strong> Translations of this page are provided for convenience only. The English version of the tenancy agreement prevails in the event of any discrepancy.
     </p>
   </div>
   <div class="section-cta-row">
@@ -3142,6 +3143,23 @@ Object.keys(roomData).forEach(key => {
 });
 
 activateResidence('mvertica');
+
+// The hero's "From RMxxx" is the cheapest room across every residence that has
+// published rates. Deriving it from roomData rather than trusting the number in
+// the markup means it cannot drift when the rates change - it was still quoting
+// RM700 after three residences were added, the cheapest of which is RM580. The
+// markup keeps the current figure so the stat is right without JavaScript too.
+// This runs before the language switcher initialises, so the switcher records
+// the computed figure as that node's English original.
+(function renderFromPrice() {
+  const el = document.querySelector('.hero-stats .num[data-from-price]');
+  if (!el) return;
+  const rates = Object.keys(roomData)
+    .reduce((all, k) => all.concat((roomData[k].rooms || []).map(rentOfRoom)), [])
+    .filter(n => n > 0);
+  if (!rates.length) return;
+  el.textContent = 'RM' + Math.min.apply(null, rates).toLocaleString('en-MY');
+})();
 
 // --- Payment calculator ---
 (function initPaymentCalculator() {
