@@ -2741,7 +2741,7 @@ footer {
     <p class="payment-disclaimer">
       <strong>Note:</strong> Prices are inclusive of 8% SST. Any adjustments or changes will be determined based on the monthly rental amount and the agreed rental terms.<br><br>
       <strong>Terms &amp; Conditions:</strong> Prices shown are for reference only. Figures are based on a <strong>12-month tenancy</strong>; tenancies of less than 12 months carry a different rental rate. Final figures will be confirmed by the BeLive team before signing.<br><br>
-      <strong>Student Type:</strong> Local students receive an RM120 discount on the rental charges and have the security deposit waived. Select your student type above for the applicable breakdown.
+      <strong>Student Type:</strong> Local students have the security deposit waived. Rental charges are the same for local and international students. Select your student type above for the applicable breakdown.
     </p>
   </div>
   <div class="section-cta-row">
@@ -3076,16 +3076,16 @@ activateResidence('mvertica');
   condoSel.innerHTML = priced.map(k => `<option value="${k}">${roomData[k].label}</option>`).join('');
   if (!priced.length) return;
 
-  // Matches the tenant-type calculation on the BeLive x INCEIF site: a local
-  // tenant gets RM120 off the rental charges and the security deposit waived.
-  // INCEIF's own RM150 processing fee is deliberately NOT carried over - it is
-  // that institution's charge, not a BeLive one.
+  // There is NO local-student discount on this site. A local tenant and an
+  // international tenant pay the same rental charges; what separates them is
+  // the security deposit, which is waived for locals. That waiver is the whole
+  // meaning of the student-type selector - do not reintroduce a rate discount
+  // from a sibling site.
   const FEES = {
     adminMoveIn: 529,    // one-time admin & move-in fee (SST-inclusive)
     carPark: 100,
     accessCard: 150,
     rentalAddOn: 200,    // added to the room's monthly rate, both student types
-    localDiscount: 120,  // deducted from rental charges for local students
     depositMultiple: 2,  // security deposit = room rental x 2 (not shown to users)
   };
   const STUDENT = {
@@ -3107,13 +3107,12 @@ activateResidence('mvertica');
     const room = rooms[roomSel.value] || rooms[0];
     const baseRent = rentOf(room);
     const rent = baseRent + FEES.rentalAddOn;
-    const discount = isLocal ? FEES.localDiscount : 0;
     const wantsCarpark = carparkSel.value === 'yes';
     const carpark = wantsCarpark ? FEES.carPark : 0;
     // Deposit follows the room rental, and is waived for local students.
     const depositBeforeWaiver = baseRent * FEES.depositMultiple;
     const securityDeposit = isLocal ? 0 : depositBeforeWaiver;
-    const total = FEES.adminMoveIn + rent - discount + carpark + securityDeposit + FEES.accessCard;
+    const total = FEES.adminMoveIn + rent + carpark + securityDeposit + FEES.accessCard;
     const rentNote = `${condoLabels[condoSel.value]} — ${room.name}`;
     const totalNote = `12-month tenancy · ${who.label} · incl. 8% SST`;
 
@@ -3121,7 +3120,6 @@ activateResidence('mvertica');
       <div class="payment-row group-head"><span class="pr-label">One-Time &amp; Monthly Fees</span></div>
       <div class="payment-row"><div><span class="pr-label">Admin &amp; Move-In Fee</span><span class="pr-note">One-time, incl. 8% SST</span></div><span class="pr-value">${fmt(FEES.adminMoveIn)}</span></div>
       <div class="payment-row"><div><span class="pr-label">Rental Charges</span><span class="pr-note">${rentNote}</span></div><span class="pr-value">${fmt(rent)}</span></div>
-      ${isLocal ? `<div class="payment-row"><div><span class="pr-label">Discount</span><span class="pr-note">${who.label} rate</span></div><span class="pr-value discount">− ${fmt(discount)}</span></div>` : ''}
       <div class="payment-row"><div><span class="pr-label">Car Park (Monthly)</span><span class="pr-note">${wantsCarpark ? 'Reserved bay added' : 'Not included'}</span></div><span class="pr-value${wantsCarpark ? '' : ' muted'}">${wantsCarpark ? fmt(FEES.carPark) : '—'}</span></div>
       <div class="payment-row group-head"><span class="pr-label">Refundable</span></div>
       <div class="payment-row"><div><span class="pr-label">Security Deposit</span><span class="pr-note">${isLocal ? 'Waived for local students' : 'Based on room rental · refundable, incl. 8% SST'}</span></div><span class="pr-value${isLocal ? ' discount' : ''}">${isLocal ? `<span class="pr-was">${fmt(depositBeforeWaiver)}</span>${fmt(0)}` : fmt(securityDeposit)}</span></div>
